@@ -1,0 +1,41 @@
+<section data-testid="login-page">
+  <h2>Login</h2>
+
+  <form data-testid="login-form" (submit)="onSubmit(); $event.preventDefault()">
+    <div>
+      <label for="username">Username</label>
+      <input
+        id="username"
+        type="text"
+        data-testid="login-username"
+        [(ngModel)]="username"
+        name="username"
+      />
+    </div>
+
+    <div>
+      <label for="password">Password</label>
+      <input
+        id="password"
+        type="password"
+        data-testid="login-password"
+        [(ngModel)]="password"
+        name="password"
+      />
+    </div>
+
+    <button type="submit" data-testid="login-submit">
+      Sign in
+    </button>
+
+    <p
+      data-testid="login-error"
+      *ngIf="showError"
+      style="color: red"
+    >
+      Invalid username or password
+    </p>
+  </form>
+</section>
+
+
