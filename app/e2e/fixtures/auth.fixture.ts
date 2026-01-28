@@ -1,19 +1,33 @@
-import { test as base } from '@playwright/test';
+import { test as base, expect, Page } from '@playwright/test';
+import { LoginPage } from '../pages/login.page';
+import { DashboardPage } from '../pages/dashboard.page';
 
+/**
+ * Расширяем стандартный test Playwright
+ * добавляя enterprise-фикстуры
+ */
 type AuthFixtures = {
-  authenticatedPage: import('@playwright/test').Page;
+  loginPage: LoginPage;
+  dashboardPage: DashboardPage;
 };
 
 export const test = base.extend<AuthFixtures>({
-  authenticatedPage: async ({ browser }, use) => {
-    const context = await browser.newContext({
-      storageState: 'e2e/auth/admin.json',
-    });
+  /**
+   * LoginPage fixture
+   */
+  loginPage: async ({ page }, use) => {
+    const loginPage = new LoginPage(page);
+    await use(loginPage);
+  },
 
-    const page = await context.newPage();
-    await use(page);
-    await context.close();
+  /**
+   * DashboardPage fixture
+   */
+  dashboardPage: async ({ page }, use) => {
+    const dashboardPage = new DashboardPage(page);
+    await use(dashboardPage);
   },
 });
 
-export const expect = test.expect;
+export { expect };
+

@@ -1,26 +1,21 @@
-import { test, expect } from '@playwright/test';
-import { LoginPage } from '../pages/login.page';
-import { DashboardPage } from '../pages/dashboard.page';
-import { clear } from 'node:console';
+import { test, expect } from '../fixtures/auth.fixture';
 
 test.describe('Login flow', () => {
-  test('successful login redirects to dashboard', async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    const dashboardPage = new DashboardPage(page);
+  test.use({ storageState: undefined });
 
+  test('successful login redirects to dashboard', async ({ loginPage, page }) => {
     await loginPage.open();
     await loginPage.login('admin', 'admin123');
 
-    await dashboardPage.assertOpened();
+    await expect(page).toHaveURL(/dashboard/);
   });
 
-  test('invalid login shows error', async ({ page }) => {
-    const loginPage = new LoginPage(page);
-
+  test('invalid login shows error', async ({ loginPage }) => {
     await loginPage.open();
-    await loginPage.login('wrong', 'credentials');
+    await loginPage.login('wrong', 'wrong');
 
-    await loginPage.assertLoginErrorVisible();
+    await loginPage.expectErrorVisible();
   });
 });
+
 

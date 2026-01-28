@@ -1,29 +1,33 @@
 import { chromium, FullConfig } from '@playwright/test';
 
 async function globalSetup(config: FullConfig) {
-  const { baseURL } = config.projects[0].use;
+  // Берём baseURL из playwright.config.ts
+  const baseURL = config.projects[0].use.baseURL as string;
 
   const browser = await chromium.launch();
-  const page = await browser.newPage();
+  const context = await browser.newContext();
+  const page = await context.newPage();
 
-  // Открываем логин
+  // 1️⃣ Открываем страницу логина
   await page.goto(`${baseURL}/login`);
 
-  // Логинимся
+  // 2️⃣ Логинимся
   await page.getByTestId('username-input').fill('admin');
   await page.getByTestId('password-input').fill('admin123');
   await page.getByTestId('login-btn').click();
 
-  // Проверяем, что мы на dashboard
+  // 3️⃣ Ждём успешный редирект
   await page.waitForURL('**/dashboard');
 
-  // Сохраняем storageState
-  await page.context().storageState({
+  // 4️⃣ Сохраняем storageState (токен авторизации)
+  await context.storageState({
     path: 'e2e/auth/admin.json',
   });
 
+  // 5️⃣ Закрываем браузер
   await browser.close();
 }
 
 export default globalSetup;
+
 

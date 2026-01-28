@@ -3,33 +3,62 @@
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
-  // Где лежат e2e тесты
+  /**
+   * Где лежат e2e тесты
+   */
   testDir: './e2e',
 
-  // Global setup для storageState (логин 1 раз)
-  globalSetup: './e2e/global-setup',
+  /**
+   * Глобальный setup
+   * Логинимся ОДИН раз и сохраняем storageState
+   */
+  globalSetup: require.resolve('./e2e/global-setup'),
 
-  // Параллельность
+  /**
+   * Параллельность
+   */
   fullyParallel: true,
 
-  // Запрет test.only в CI
+  /**
+   * Запрещаем test.only в CI
+   */
   forbidOnly: !!process.env.CI,
 
-  // Ретраи
+  /**
+   * Retry логика
+   */
   retries: process.env.CI ? 1 : 0,
 
-  // В CI — один воркер
+  /**
+   * В CI — один воркер (стабильность)
+   */
   workers: process.env.CI ? 1 : undefined,
 
+  /**
+   * Репорт
+   */
   reporter: [['html', { open: 'never' }]],
 
+  /**
+   * Общие настройки для всех тестов
+   */
   use: {
     baseURL: 'http://localhost:4200',
+
+    /**
+     * 🔑 КРИТИЧЕСКИ ВАЖНО
+     * Подхватываем сохранённый токен
+     */
+    storageState: 'e2e/auth/admin.json',
+
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
   },
 
+  /**
+   * Проекты (пока только chromium)
+   */
   projects: [
     {
       name: 'chromium',
@@ -37,6 +66,9 @@ export default defineConfig({
     },
   ],
 
+  /**
+   * Angular dev server
+   */
   webServer: {
     command: 'npm start',
     port: 4200,
@@ -44,3 +76,4 @@ export default defineConfig({
     timeout: 120 * 1000,
   },
 });
+
