@@ -1,13 +1,13 @@
 <section data-testid="login-page">
   <h2>Login</h2>
 
-  <form data-testid="login-form" (submit)="onSubmit(); $event.preventDefault()">
+  <form (ngSubmit)="onSubmit()">
     <div>
       <label for="username">Username</label>
       <input
         id="username"
         type="text"
-        data-testid="login-username"
+        data-testid="username-input"
         [(ngModel)]="username"
         name="username"
       />
@@ -18,24 +18,21 @@
       <input
         id="password"
         type="password"
-        data-testid="login-password"
+        data-testid="password-input"
         [(ngModel)]="password"
         name="password"
       />
     </div>
 
-    <button type="submit" data-testid="login-submit">
+    <button type="submit" data-testid="login-btn">
       Sign in
     </button>
 
-    <p
-      data-testid="login-error"
-      *ngIf="showError"
-      style="color: red"
-    >
+    <p *ngIf="showError" data-testid="login-error">
       Invalid username or password
     </p>
   </form>
 </section>
+
 
 
