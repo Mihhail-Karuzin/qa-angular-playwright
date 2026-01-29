@@ -12,19 +12,19 @@ import { AuthService } from '../../core/auth/auth.service';
   styleUrls: ['./login.css'],
 })
 export class LoginComponent {
-  username: string = '';
-  password: string = '';
-  showError: boolean = false;
+  username = '';
+  password = '';
+  showError = false;
 
   constructor(
-    private router: Router,
-    private auth: AuthService
+    private auth: AuthService,
+    private router: Router
   ) {}
 
   onSubmit(): void {
-    const ok = this.auth.login(this.username, this.password);
+    const success = this.auth.login(this.username, this.password);
 
-    if (ok) {
+    if (success) {
       this.showError = false;
       this.router.navigate(['/dashboard']);
     } else {
@@ -32,6 +32,8 @@ export class LoginComponent {
     }
   }
 }
+
+
 
 
 

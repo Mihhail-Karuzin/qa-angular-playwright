@@ -1,38 +1,43 @@
-<section data-testid="login-page">
-  <h2>Login</h2>
+<form
+  data-testid="login-form"
+  (ngSubmit)="onSubmit()"
+>
+  <label for="username">Username</label>
+  <input
+    id="username"
+    data-testid="username-input"
+    name="username"
+    [(ngModel)]="username"
+    required
+  />
 
-  <form (ngSubmit)="onSubmit()">
-    <div>
-      <label for="username">Username</label>
-      <input
-        id="username"
-        type="text"
-        data-testid="username-input"
-        [(ngModel)]="username"
-        name="username"
-      />
-    </div>
+  <label for="password">Password</label>
+  <input
+    id="password"
+    type="password"
+    data-testid="password-input"
+    name="password"
+    [(ngModel)]="password"
+    required
+  />
 
-    <div>
-      <label for="password">Password</label>
-      <input
-        id="password"
-        type="password"
-        data-testid="password-input"
-        [(ngModel)]="password"
-        name="password"
-      />
-    </div>
+  <button
+    type="submit"
+    data-testid="login-btn"
+  >
+    Login
+  </button>
 
-    <button type="submit" data-testid="login-btn">
-      Sign in
-    </button>
+  <p
+    *ngIf="showError"
+    data-testid="login-error"
+    role="alert"
+  >
+    Invalid credentials
+  </p>
+</form>
 
-    <p *ngIf="showError" data-testid="login-error">
-      Invalid username or password
-    </p>
-  </form>
-</section>
+
 
 
 
