@@ -1,7 +1,10 @@
 <form
   data-testid="login-form"
   (ngSubmit)="onSubmit()"
+  aria-labelledby="login-title"
 >
+  <h2 id="login-title">Login</h2>
+
   <label for="username">Username</label>
   <input
     id="username"
@@ -9,6 +12,7 @@
     name="username"
     [(ngModel)]="username"
     required
+    autocomplete="username"
   />
 
   <label for="password">Password</label>
@@ -19,6 +23,7 @@
     name="password"
     [(ngModel)]="password"
     required
+    autocomplete="current-password"
   />
 
   <button
@@ -32,10 +37,12 @@
     *ngIf="showError"
     data-testid="login-error"
     role="alert"
+    aria-live="assertive"
   >
     Invalid credentials
   </p>
 </form>
+
 
 
 
