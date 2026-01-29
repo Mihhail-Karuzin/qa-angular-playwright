@@ -4,50 +4,61 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   /**
-   * Где лежат e2e тесты
+   * 📁 Где лежат E2E тесты
+   * ТОЛЬКО Playwright, никаких Angular unit
    */
   testDir: './e2e',
 
   /**
-   * Глобальный setup
-   * Логинимся ОДИН раз и сохраняем storageState
+   * ❌ КРИТИЧНО:
+   * Исключаем Angular unit tests (Jasmine/Karma)
+   */
+  testIgnore: [
+    '**/node_modules/**',
+    '**/src/**/*.spec.ts',        // Angular unit tests
+    '**/*.unit.spec.ts',
+  ],
+
+  /**
+   * 🔑 Global setup
+   * Логин 1 раз → сохраняем storageState
    */
   globalSetup: require.resolve('./e2e/global-setup'),
 
   /**
-   * Параллельность
+   * ⚡ Параллельность
    */
   fullyParallel: true,
 
   /**
-   * Запрещаем test.only в CI
+   * 🚫 Запрещаем test.only в CI
    */
   forbidOnly: !!process.env.CI,
 
   /**
-   * Retry логика
+   * 🔁 Retry логика
    */
   retries: process.env.CI ? 1 : 0,
 
   /**
-   * В CI — один воркер (стабильность)
+   * 👷 В CI используем 1 worker (стабильность)
    */
   workers: process.env.CI ? 1 : undefined,
 
   /**
-   * Репорт
+   * 📊 Репорты
    */
   reporter: [['html', { open: 'never' }]],
 
   /**
-   * Общие настройки для всех тестов
+   * 🌍 Общие настройки
    */
   use: {
     baseURL: 'http://localhost:4200',
 
     /**
-     * 🔑 КРИТИЧЕСКИ ВАЖНО
-     * Подхватываем сохранённый токен
+     * 🔐 Подхватываем сохранённый токен
+     * По умолчанию все тесты — авторизованы
      */
     storageState: 'e2e/auth/admin.json',
 
@@ -57,7 +68,7 @@ export default defineConfig({
   },
 
   /**
-   * Проекты (пока только chromium)
+   * 🌐 Браузеры
    */
   projects: [
     {
@@ -67,7 +78,7 @@ export default defineConfig({
   ],
 
   /**
-   * Angular dev server
+   * 🚀 Angular dev server
    */
   webServer: {
     command: 'npm start',

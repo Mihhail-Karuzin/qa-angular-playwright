@@ -2,6 +2,12 @@ import { Injectable } from '@angular/core';
 
 const AUTH_KEY = 'qa_auth_token';
 
+/**
+ * Demo-only valid token.
+ * In real apps this would be a JWT validated by backend.
+ */
+const VALID_TOKEN = 'fake-token';
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   /**
@@ -12,8 +18,7 @@ export class AuthService {
     const isValid = username === 'admin' && password === 'admin123';
 
     if (isValid) {
-      // Store auth token (demo purpose)
-      localStorage.setItem(AUTH_KEY, 'fake-token');
+      localStorage.setItem(AUTH_KEY, VALID_TOKEN);
     }
 
     return isValid;
@@ -28,12 +33,16 @@ export class AuthService {
 
   /**
    * Auth check used by guards and app logic
-   * IMPORTANT:
-   * - Works after page reload
-   * - Works with Playwright storageState
+   *
+   * SECURITY NOTE:
+   * - Demo-level token validation
+   * - Prevents access with invalid / tampered tokens
+   * - Makes security E2E tests deterministic
    */
   isAuthenticated(): boolean {
-    return !!localStorage.getItem(AUTH_KEY);
+    const token = localStorage.getItem(AUTH_KEY);
+    return token === VALID_TOKEN;
   }
 }
+
 
