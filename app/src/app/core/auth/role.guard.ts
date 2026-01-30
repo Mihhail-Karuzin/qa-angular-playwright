@@ -1,28 +1,36 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
 import { AuthService, UserRole } from './auth.service';
 
-@Injectable({ providedIn: 'root' })
-export class RoleGuard implements CanActivate {
+/**
+ * Role Guard (RBAC)
+ * Protects routes based on user roles
+ */
+export const roleGuard: CanActivateFn = (route) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-  constructor(
-    private auth: AuthService,
-    private router: Router
-  ) {}
+  // Not authenticated → redirect to login
+  if (!authService.isAuthenticated()) {
+    return router.parseUrl('/login');
+  }
 
-  canActivate(route: any): boolean {
-    const expectedRole: UserRole = route.data?.role;
+  const roles = (route.data?.['roles'] ?? []) as UserRole[];
 
-    if (!this.auth.isAuthenticated()) {
-      this.router.navigate(['/login']);
-      return false;
-    }
-
-    if (!this.auth.hasRole(expectedRole)) {
-      this.router.navigate(['/dashboard']);
-      return false;
-    }
-
+  // No roles specified → allow access
+  if (roles.length === 0) {
     return true;
   }
-}
+
+  // Check if user has at least one required role
+  const hasAccess = roles.some(role => authService.hasRole(role));
+
+  if (hasAccess) {
+    return true;
+  }
+
+  // Forbidden → redirect to dashboard
+  return router.parseUrl('/dashboard');
+};
+
+

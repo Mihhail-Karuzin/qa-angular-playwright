@@ -1,36 +1,36 @@
 import { chromium, FullConfig } from '@playwright/test';
 
-async function globalSetup(config: FullConfig) {
-  const baseURL = config.projects[0].use.baseURL as string;
-
+async function createState(
+  baseURL: string,
+  username: string,
+  password: string,
+  outFile: string
+) {
   const browser = await chromium.launch();
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  // 1️⃣ Открываем login
   await page.goto(`${baseURL}/login`);
 
-  // 2️⃣ Заполняем форму
-  await page.getByTestId('username-input').fill('admin');
-  await page.getByTestId('password-input').fill('admin123');
+  await page.getByTestId('username-input').fill(username);
+  await page.getByTestId('password-input').fill(password);
+  await page.getByTestId('login-btn').click();
 
-  // 3️⃣ Сабмитим форму
-  await page.keyboard.press('Enter');
+  await page.waitForURL('**/dashboard');
 
-  // 4️⃣ ЖДЁМ ПОЯВЛЕНИЯ ТОКЕНА (а не URL!)
-  await page.waitForFunction(() => {
-    return localStorage.getItem('qa_auth_token') !== null;
-  });
-
-  // 5️⃣ Сохраняем storageState
-  await context.storageState({
-    path: 'e2e/auth/admin.json',
-  });
-
+  await context.storageState({ path: outFile });
   await browser.close();
 }
 
-export default globalSetup;
+export default async function globalSetup(config: FullConfig) {
+  const baseURL = config.projects[0].use.baseURL as string;
+
+  await createState(baseURL, 'admin', 'admin123', 'e2e/auth/admin.json');
+  await createState(baseURL, 'user', 'user123', 'e2e/auth/user.json');
+}
+
+
+
 
 
 

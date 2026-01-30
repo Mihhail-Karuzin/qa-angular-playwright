@@ -8,8 +8,9 @@
   <label for="username">Username</label>
   <input
     id="username"
-    data-testid="username-input"
     name="username"
+    type="text"
+    data-testid="username-input"
     [(ngModel)]="username"
     required
     autocomplete="username"
@@ -18,9 +19,9 @@
   <label for="password">Password</label>
   <input
     id="password"
+    name="password"
     type="password"
     data-testid="password-input"
-    name="password"
     [(ngModel)]="password"
     required
     autocomplete="current-password"
@@ -42,6 +43,8 @@
     Invalid credentials
   </p>
 </form>
+
+
 
 
 

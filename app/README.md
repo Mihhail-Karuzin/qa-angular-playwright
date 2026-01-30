@@ -17,3 +17,10 @@
 - In real production systems token validation is handled by backend.
 - Security E2E tests ensure frontend guards behave correctly.
 
+- Unauthenticated access → redirected to `/login`
+- Access after logout → redirected to `/login`
+- RBAC (role-based access control) enforced on protected routes
+- Invalid token handling is **demo-level**
+  - Token validation is assumed to be backend responsibility
+  - Frontend reacts to backend `401/403` responses in real systems
+

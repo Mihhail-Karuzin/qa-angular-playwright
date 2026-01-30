@@ -14,8 +14,7 @@ export const authGuard: CanActivateFn = () => {
     return true;
   }
 
-  // Redirect unauthenticated user to login page
-  router.navigate(['/login']);
-  return false;
+  return router.parseUrl('/login');
 };
+
 

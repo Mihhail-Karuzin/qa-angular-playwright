@@ -15,6 +15,7 @@ export class LoginComponent {
   username = '';
   password = '';
   showError = false;
+  submitting = false;
 
   constructor(
     private auth: AuthService,
@@ -22,6 +23,12 @@ export class LoginComponent {
   ) {}
 
   onSubmit(): void {
+    if (this.submitting) {
+      return;
+    }
+
+    this.submitting = true;
+
     const success = this.auth.login(this.username, this.password);
 
     if (success) {
@@ -29,6 +36,7 @@ export class LoginComponent {
       this.router.navigate(['/dashboard']);
     } else {
       this.showError = true;
+      this.submitting = false;
     }
   }
 }
