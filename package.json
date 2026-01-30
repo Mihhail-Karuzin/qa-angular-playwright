@@ -1,5 +1,24 @@
 {
+  "name": "qa-angular-playwright",
+  "private": true,
+  "scripts": {
+    "start": "ng serve --port 4200",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@angular/common": "^17.0.0",
+    "@angular/compiler": "^17.0.0",
+    "@angular/core": "^17.0.0",
+    "@angular/platform-browser": "^17.0.0",
+    "@angular/router": "^17.0.0",
+    "rxjs": "^7.8.0",
+    "zone.js": "^0.14.0"
+  },
   "devDependencies": {
-    "@playwright/test": "^1.58.0"
+    "@angular/cli": "^17.0.0",
+    "@angular/compiler-cli": "^17.0.0",
+    "@playwright/test": "^1.58.0",
+    "typescript": "~5.4.0"
   }
 }
+
