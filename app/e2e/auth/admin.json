@@ -5,6 +5,10 @@
       "origin": "http://localhost:4200",
       "localStorage": [
         {
+          "name": "qa_user_role",
+          "value": "admin"
+        },
+        {
           "name": "qa_auth_token",
           "value": "fake-token"
         }

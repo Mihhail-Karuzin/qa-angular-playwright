@@ -8,7 +8,9 @@
 | Invalid auth token               | E2E       | Forced logout + redirect                   | ✅     |
 | Access after logout              | E2E       | Redirect to `/login`                        | ✅     |
 | Authenticated dashboard access   | E2E       | Dashboard rendered                         | ✅     |
-| Login with invalid credentials   | E2E       | Error message shown                        | ✅     |
+| Login with invalid credentials   | E2E       | Error message shown                        | 
+✅     |
+| Role-based access control (RBAC) | E2E | Admin-only routes protected |
 
 **Notes**
 - Token validation is demo-level and deterministic.

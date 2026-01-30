@@ -1,48 +1,46 @@
 import { Injectable } from '@angular/core';
 
 const AUTH_KEY = 'qa_auth_token';
+const ROLE_KEY = 'qa_user_role';
 
-/**
- * Demo-only valid token.
- * In real apps this would be a JWT validated by backend.
- */
-const VALID_TOKEN = 'fake-token';
+export type UserRole = 'admin' | 'user';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  /**
-   * Demo login logic.
-   * In real apps this would be an API call.
-   */
-  login(username: string, password: string): boolean {
-    const isValid = username === 'admin' && password === 'admin123';
 
-    if (isValid) {
-      localStorage.setItem(AUTH_KEY, VALID_TOKEN);
+  login(username: string, password: string): boolean {
+    if (username === 'admin' && password === 'admin123') {
+      localStorage.setItem(AUTH_KEY, 'fake-token');
+      localStorage.setItem(ROLE_KEY, 'admin');
+      return true;
     }
 
-    return isValid;
+    if (username === 'user' && password === 'user123') {
+      localStorage.setItem(AUTH_KEY, 'fake-token');
+      localStorage.setItem(ROLE_KEY, 'user');
+      return true;
+    }
+
+    return false;
   }
 
-  /**
-   * Logout user and clear auth state
-   */
   logout(): void {
     localStorage.removeItem(AUTH_KEY);
+    localStorage.removeItem(ROLE_KEY);
   }
 
-  /**
-   * Auth check used by guards and app logic
-   *
-   * SECURITY NOTE:
-   * - Demo-level token validation
-   * - Prevents access with invalid / tampered tokens
-   * - Makes security E2E tests deterministic
-   */
   isAuthenticated(): boolean {
-    const token = localStorage.getItem(AUTH_KEY);
-    return token === VALID_TOKEN;
+    return !!localStorage.getItem(AUTH_KEY);
+  }
+
+  getRole(): UserRole | null {
+    return localStorage.getItem(ROLE_KEY) as UserRole | null;
+  }
+
+  hasRole(role: UserRole): boolean {
+    return this.getRole() === role;
   }
 }
+
 
 
