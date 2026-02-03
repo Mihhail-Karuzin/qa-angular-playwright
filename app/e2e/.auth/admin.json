@@ -1,0 +1,22 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:4200",
+      "localStorage": [
+        {
+          "name": "auth_role",
+          "value": "admin"
+        },
+        {
+          "name": "auth_token",
+          "value": "demo-token"
+        },
+        {
+          "name": "auth_expires_at",
+          "value": "1770133260045"
+        }
+      ]
+    }
+  ]
+}

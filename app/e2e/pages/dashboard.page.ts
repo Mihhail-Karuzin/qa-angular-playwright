@@ -2,36 +2,38 @@ import { expect, Locator, Page } from '@playwright/test';
 
 export class DashboardPage {
   readonly page: Page;
+  readonly heading: Locator;
   readonly logoutButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.logoutButton = page.getByTestId('logout-btn');
+
+    // ⬅️ ВАЖНО: проверь реальный текст заголовка
+    this.heading = page.getByRole('heading', {
+      name: /dashboard/i,
+    });
+
+    // ✅ ИСПРАВЛЕНО: реальный testid
+    this.logoutButton = page.getByRole('button', {
+      name: /logout/i,
+    });
   }
 
-  /**
-   * Explicit navigation to dashboard page.
-   * IMPORTANT:
-   * - Even with storageState, Playwright starts on about:blank
-   * - Navigation must always be explicit in Page Objects
-   */
   async open() {
     await this.page.goto('/dashboard');
   }
 
-  /**
-   * Assertion that dashboard page is opened
-   */
   async expectOpened() {
     await expect(this.page).toHaveURL(/\/dashboard/);
+    await expect(this.heading).toBeVisible();
   }
 
-  /**
-   * Logout action
-   */
   async logout() {
+    await expect(this.logoutButton).toBeVisible();
     await this.logoutButton.click();
   }
 }
+
+
 
 

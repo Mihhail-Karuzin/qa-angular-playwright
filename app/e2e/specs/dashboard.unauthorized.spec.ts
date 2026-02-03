@@ -1,16 +1,18 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Dashboard unauthorized scenarios', () => {
-  test('user without auth token is redirected to login', async ({ page }) => {
-    // ❌ удаляем токен вручную
-    await page.addInitScript(() => {
-      localStorage.removeItem('qa_auth_token');
-    });
+  test.beforeEach(({ }, testInfo) => {
+    test.skip(
+      testInfo.project.name !== 'anon',
+      'Unauthorized scenarios run only for anon users'
+    );
+  });
 
-    // идём напрямую
+  test('user without auth token is redirected to login', async ({ page }) => {
     await page.goto('/dashboard');
 
-    // guard должен сработать
     await expect(page).toHaveURL(/\/login/);
+    await expect(page.getByTestId('login-form')).toBeVisible();
   });
 });
+
