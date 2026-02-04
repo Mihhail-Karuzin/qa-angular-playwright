@@ -100,6 +100,20 @@ RBAC behavior is validated through **Playwright E2E tests** and reflects real-wo
 
 ---
 
+## ♿ Accessibility (A11Y)
+
+Basic accessibility checks are validated using Playwright E2E tests to ensure
+the application remains usable for keyboard and assistive technology users.
+
+Covered areas:
+- Keyboard-only navigation for the login form
+- Accessible labels for form inputs
+- Proper ARIA roles for interactive elements
+- Accessible error messages for authentication failures
+
+Accessibility tests are treated as regression checks to prevent accidental
+accessibility regressions during UI changes.
+
 ## ⏳ Session Model & Lifecycle
 
 Session state is stored in `localStorage`:
