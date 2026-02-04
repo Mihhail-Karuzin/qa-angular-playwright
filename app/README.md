@@ -1,150 +1,174 @@
 ![CI](https://github.com/Mihhail-Karuzin/qa-angular-playwright/actions/workflows/main.yml/badge.svg)
 
+# 🧪 QA Angular Playwright — Security-Focused E2E Testing
+
+Enterprise-grade end-to-end testing project for an Angular SPA, focused on **authentication, authorization, and session lifecycle validation** using Playwright.
+
+This repository demonstrates how a QA Automation Engineer / SDET validates **client-side security behavior** in a predictable, CI-safe, and well-documented manner.
+
+---
+
+## 🎯 Project Goals
+
+- Validate authentication and authorization flows in an Angular SPA
+- Ensure protected routes are not accessible without proper session state
+- Demonstrate session lifecycle testing (expiration, forced logout)
+- Provide deterministic, CI-friendly E2E tests
+- Document security-related limitations transparently
+
+---
+
 ## 🔐 Security Test Coverage
 
-| Scenario                          | Test Type | Expected Behavior                          | Status |
-|----------------------------------|----------:|---------------------------------------------|:------:|
-| Unauthenticated dashboard access | E2E       | Redirect to `/login`                        | ✅     |
-| Invalid auth token               | E2E       | Forced logout + redirect                   | ✅     |
-| Access after logout              | E2E       | Redirect to `/login`                        | ✅     |
-| Authenticated dashboard access   | E2E       | Dashboard rendered                         | ✅     |
-| Login with invalid credentials   | E2E       | Error message shown                        | 
-✅     |
-| Role-based access control (RBAC) | E2E | Admin-only routes protected |
+| Scenario                          | Test Type | Expected Behavior                               | Status |
+|----------------------------------|----------:|--------------------------------------------------|:------:|
+| Unauthenticated dashboard access | E2E       | Redirect to `/login`                             | ✅     |
+| Authenticated dashboard access   | E2E       | Dashboard rendered                               | ✅     |
+| Login with invalid credentials   | E2E       | Error message displayed                          | ✅     |
+| Access after logout              | E2E       | Redirect to `/login`                             | ✅     |
+| Session expiration               | E2E       | Redirect to `/login` with `returnUrl`            | ✅     |
+| Forced logout (token missing)    | E2E       | Access denied on protected routes                | ✅     |
+| Role-based access control (RBAC) | E2E       | Admin-only routes protected                     | ✅     |
 
-**Notes**
-- Token validation is demo-level and deterministic.
-- In real production systems token validation is handled by backend.
-- Security E2E tests ensure frontend guards behave correctly.
+---
 
-- Unauthenticated access → redirected to `/login`
-- Access after logout → redirected to `/login`
-- RBAC (role-based access control) enforced on protected routes
-- Invalid token handling is **demo-level**
-  - Token validation is assumed to be backend responsibility
-  - Frontend reacts to backend `401/403` responses in real systems
+## 🔒 Security & Access Control (Phase 2)
 
+This phase focuses on **client-side security enforcement** and access control for the Angular application.
 
+The goal is not to replace backend security, but to ensure that:
+- frontend guards behave correctly
+- access control rules are enforced consistently
+- edge cases are covered by automated tests
 
-Security & Access Control (Phase 2)
-Scope
+---
 
-This phase focuses on client-side security validation and access control enforcement for the Angular application, ensuring predictable and testable authentication behavior.
+## 🔑 Authentication & Route Guards
 
-Covered areas include:
+The application uses a **client-side session model** stored in `localStorage`.
 
-Authentication guards
+Protected routes are guarded using Angular `CanActivate` guards:
 
-Role-based access control (RBAC)
+### AuthGuard
+- Blocks unauthenticated access
+- Redirects users to `/login`
+- Preserves the originally requested route via `returnUrl`
 
-Logout behavior
+### RoleGuard
+- Enforces role-based access control
+- Redirects unauthorized users away from restricted routes
 
-Unauthorized access handling
+#### Protected routes
 
-Security-related limitations documentation
-
-Authentication & Guards
-
-The application uses a client-side session model based on localStorage.
-
-Protected routes are guarded using Angular CanActivate guards:
-
-AuthGuard
-
-Blocks unauthenticated access
-
-Redirects users to /login
-
-Preserves the originally requested route via returnUrl
-
-RoleGuard
-
-Enforces role-based access (user, admin)
-
-Redirects unauthorized roles away from restricted routes
-
-/dashboard  → requires authentication
-/admin      → requires admin role
-
-Role-Based Access Control (RBAC)
-
-Supported roles:
-
-anon — unauthenticated
-
-user — authenticated standard user
-
-admin — privileged user
-
-RBAC behavior is validated through both manual verification and automated Playwright tests.
-
-Scenario	Expected Behavior
-anon → /dashboard	Redirected to /login
-anon → /admin	Redirected to /login
-user → /admin	Redirected to /dashboard
-admin → /admin	Access granted
-Session Model
-
-Session state is stored in localStorage:
-
-auth_token       = demo-token
-auth_role        = user | admin
-auth_expires_at  = timestamp (TTL-based)
+/dashboard → requires authentication
+/admin → requires admin role
 
 
-Key properties:
+---
 
-Hard expiration enforced via timestamp comparison
+## 🧑‍💼 Role-Based Access Control (RBAC)
 
-Expired sessions automatically invalidate authentication state
+### Supported roles
+- `anon`  — unauthenticated user
+- `user`  — authenticated standard user
+- `admin` — privileged user
 
-Logout clears all session-related keys
+### RBAC behavior
 
-This model is intentionally simple and deterministic to ensure test stability.
+| Scenario            | Expected Behavior              |
+|---------------------|--------------------------------|
+| anon → /dashboard   | Redirected to `/login`         |
+| anon → /admin       | Redirected to `/login`         |
+| user → /admin       | Redirected to `/dashboard`     |
+| admin → /admin      | Access granted                 |
 
-Logout Behavior
+RBAC behavior is validated through **Playwright E2E tests** and reflects real-world frontend authorization patterns.
 
-Logout is treated as a security-critical flow and validated explicitly:
+---
 
-Clears all session storage
+## ⏳ Session Model & Lifecycle
 
-Redirects user to /login
+Session state is stored in `localStorage`:
 
-Prevents access to protected routes after logout
+auth_token = demo token
+auth_role = user | admin
+auth_expires_at = timestamp (TTL-based)
 
-Regression tests ensure logout behavior cannot be bypassed via navigation.
 
-Invalid Token Handling (Documented Limitation)
+### Key properties
+- Session expiration is enforced via timestamp comparison
+- Expired sessions are rejected at **route-guard level**
+- Logout clears all session-related keys
+- Session model is intentionally simple and deterministic to ensure test stability
 
-The application does not validate token integrity on the client side.
+---
 
-Reasoning:
+## 🚪 Logout Behavior
 
-Token validation is considered a backend responsibility
+Logout is treated as a **security-critical flow** and explicitly validated:
 
-Client-side token parsing or verification would introduce false security guarantees
+- Clears all authentication-related data
+- Redirects user to `/login`
+- Prevents access to protected routes after logout
 
-This limitation is explicitly documented and covered by tests
+Regression tests ensure logout behavior cannot be bypassed via navigation or state manipulation.
 
-Invalid or tampered tokens are treated as an out-of-scope scenario
-for client-side enforcement.
+---
 
-Testing Strategy
+## ⚠️ Documented Security Limitations
 
-Security behavior is verified using Playwright E2E tests with isolated auth scopes:
+This project intentionally documents its limitations to reflect real-world engineering tradeoffs.
 
-Separate auth states (anon, user, admin)
+### Token Validation
+- Token integrity is **not validated on the client side**
+- Token validation is considered a **backend responsibility**
+- Client-side token verification would introduce false security guarantees
 
-storageState-based session injection
+### Forced Logout
+- Forced logout on `auth_token` removal during an **active session** is **not supported by design**
+- Authentication state is validated at **route-guard level only**
+- Security tests validate access denial **on navigation**, not during runtime state mutation
 
-Clear separation between:
+These limitations are **explicitly documented and covered by tests**, not hidden.
 
-authentication tests
+---
 
-authorization tests
+## 🧪 Testing Strategy
 
-security regression tests
+Security behavior is verified using **Playwright E2E tests** with isolated authentication scopes:
 
-All security-related tests run in CI and are required to pass.
+- Separate auth states (`anon`, `user`, `admin`)
+- `storageState`-based session injection
+- Clear separation between:
+  - authentication tests
+  - authorization tests
+  - session lifecycle tests
+  - security regression tests
+
+All security-related tests:
+- run in CI
+- are deterministic
+- must pass for the pipeline to succeed
+
+---
+
+## 🚀 CI Integration
+
+- GitHub Actions executes all E2E tests
+- Failures block the pipeline
+- Ensures security regressions are detected early
+
+---
+
+## 📌 Summary
+
+This project demonstrates how a QA Automation Engineer / SDET:
+
+- tests client-side security realistically
+- adapts test strategy to application design
+- avoids false assumptions
+- documents limitations transparently
+- builds recruiter-ready, enterprise-grade test artifacts
+
 
 

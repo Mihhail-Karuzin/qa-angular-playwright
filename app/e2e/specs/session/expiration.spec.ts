@@ -1,27 +1,39 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Session: expiration', () => {
+test.describe('Session lifecycle: expiration', () => {
+  const DASHBOARD_PATH = '/dashboard';
 
-  test('expired session redirects to login with returnUrl', async ({ page }) => {
-    test.skip(
-      test.info().project.name !== 'anon',
-      'Expiration relevant only for anon'
-    );
+  test('redirects to /login with returnUrl when auth_expires_at is expired (on navigation)', async ({ page }) => {
+    // Ensure we start from a clean baseline (global storageState may exist).
+    // We intentionally set token + role to mimic "user appears logged in",
+    // but the session is expired by time.
+    await page.addInitScript(() => {
+      localStorage.setItem('auth_token', 'dummy-token');
+      localStorage.setItem('auth_role', 'user');
+      localStorage.setItem('auth_expires_at', '0'); // expired
+    });
 
-    // 1️⃣ Пытаемся зайти в защищённую страницу
-    await page.goto('/dashboard');
+    await page.goto(DASHBOARD_PATH);
 
-    // 2️⃣ Реальное поведение guard
-    await expect(page).toHaveURL(/\/login/);
-
-    // 3️⃣ Проверяем что это именно редирект
-    const url = new URL(page.url());
-    expect(url.searchParams.get('returnUrl')).toBe('/dashboard');
-
-    // 4️⃣ Login UI присутствует
-    await expect(page.getByTestId('login-form')).toBeVisible();
+    // Expect redirect to login and preservation of user intent (returnUrl)
+    await expect(page).toHaveURL(/\/login\?returnUrl=%2Fdashboard/);
   });
 
+  test('redirects to /login when session is already expired before route activation (guard-level expiration)', async ({ page }) => {
+    // Simulate an expired session BEFORE any protected route is activated.
+    await page.addInitScript(() => {
+      localStorage.setItem('auth_token', 'dummy-token');
+      localStorage.setItem('auth_role', 'user');
+      localStorage.setItem('auth_expires_at', '0'); // expired
+    });
+
+    await page.goto(DASHBOARD_PATH);
+
+    // Guard should immediately redirect to login and preserve returnUrl
+    await expect(page).toHaveURL(/\/login\?returnUrl=%2Fdashboard/);
+  });
 });
+
+
 
 

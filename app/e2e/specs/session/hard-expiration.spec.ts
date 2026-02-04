@@ -1,12 +1,31 @@
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
-test.fixme(
-  true,
-  'Session expiration is enforced backend-side and cannot be simulated via storageState'
-);
+test.describe('Session lifecycle: hard expiration (guard-level)', () => {
+  const DASHBOARD_PATH = '/dashboard';
 
-test('expired session forces logout on next navigation', async ({ page }) => {
-  // documented limitation
+  test('redirects to /login when auth_token is missing before route activation', async ({ page }) => {
+    // Simulate corrupted session BEFORE navigation
+    await page.addInitScript(() => {
+      localStorage.removeItem('auth_token');
+      localStorage.setItem('auth_role', 'user');
+      localStorage.setItem('auth_expires_at', `${Date.now() + 60_000}`);
+    });
+
+    await page.goto(DASHBOARD_PATH);
+
+    await expect(page).toHaveURL(/\/login/);
+  });
+
+  test('denies access to protected routes when localStorage is cleared before navigation', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.clear();
+    });
+
+    await page.goto(DASHBOARD_PATH);
+
+    await expect(page).toHaveURL(/\/login/);
+  });
 });
+
 
 
