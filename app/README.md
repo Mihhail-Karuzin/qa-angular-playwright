@@ -114,6 +114,42 @@ Covered areas:
 Accessibility tests are treated as regression checks to prevent accidental
 accessibility regressions during UI changes.
 
+## ⚡ Performance Testing
+
+Performance validation is implemented using **Lighthouse CLI**.
+
+### Scope
+- Login page (`/login`)
+- Dashboard page (`/dashboard`)
+
+### Tooling
+- Lighthouse (CLI)
+- Chromium (headless)
+- WSL / CI–friendly configuration
+
+### Execution
+```bash
+npm run performance:login
+npm run performance:dashboard
+
+Notes
+
+- Lighthouse is executed via CLI for deterministic results
+
+- Explicit CHROME_PATH is used for WSL / container compatibility
+
+- Performance testing is intentionally separated from E2E flows
+
+- HTML reports are generated for manual review
+
+Limitations
+
+- Audits are executed against Angular dev server
+
+- Results may differ from production builds
+
+---
+
 ## ⏳ Session Model & Lifecycle
 
 Session state is stored in `localStorage`:

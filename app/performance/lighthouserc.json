@@ -1,0 +1,28 @@
+{
+  "ci": {
+    "collect": {
+      "url": [
+        "http://localhost:4200/login",
+        "http://localhost:4200/dashboard"
+      ],
+      "numberOfRuns": 3,
+      "settings": {
+        "chromePath": "/home/mihhail_linux/.cache/ms-playwright/chromium_headless_shell-1200/chrome-headless-shell-linux64/chrome-headless-shell",
+        "chromeFlags": [
+          "--headless",
+          "--no-sandbox",
+          "--disable-gpu",
+          "--disable-dev-shm-usage"
+        ]
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["warn", { "minScore": 0.75 }],
+        "categories:accessibility": ["error", { "minScore": 0.9 }]
+      }
+    }
+  }
+}
+
+

@@ -12,7 +12,17 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
 
+  /**
+   * =========================
+   * PROJECTS
+   * =========================
+   */
   projects: [
+    /**
+     * -------------------------
+     * Anonymous user
+     * -------------------------
+     */
     {
       name: 'anon',
       use: {
@@ -20,6 +30,11 @@ export default defineConfig({
       },
     },
 
+    /**
+     * -------------------------
+     * Authenticated user
+     * -------------------------
+     */
     {
       name: 'user',
       use: {
@@ -30,6 +45,11 @@ export default defineConfig({
       },
     },
 
+    /**
+     * -------------------------
+     * Admin user
+     * -------------------------
+     */
     {
       name: 'admin',
       use: {
@@ -39,8 +59,33 @@ export default defineConfig({
         ),
       },
     },
+
+    /**
+     * =========================
+     * PERFORMANCE (LIGHTHOUSE)
+     * =========================
+     *
+     * - Isolated project
+     * - Single worker ONLY
+     * - No parallelism
+     * - Required for Lighthouse stability
+     */
+    {
+      name: 'performance',
+      testMatch: /.*lighthouse\.e2e\.spec\.ts/,
+      workers: 1,
+      retries: 0,
+      use: {
+        storageState: undefined,
+      },
+    },
   ],
 
+  /**
+   * =========================
+   * WEB SERVER
+   * =========================
+   */
   webServer: {
     command: 'npm start',
     url: 'http://localhost:4200',

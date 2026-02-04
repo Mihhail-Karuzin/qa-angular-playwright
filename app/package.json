@@ -1,13 +1,20 @@
 {
   "name": "app",
   "version": "0.0.0",
+  "private": true,
+  "packageManager": "npm@10.8.2",
+
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+
+    "performance:login": "CHROME_PATH=/usr/bin/chromium-browser lighthouse http://localhost:4200/login --only-categories=performance,accessibility --chrome-flags='--headless --no-sandbox --disable-gpu --disable-dev-shm-usage'",
+    "performance:dashboard": "CHROME_PATH=/usr/bin/chromium-browser lighthouse http://localhost:4200/dashboard --only-categories=performance,accessibility --chrome-flags='--headless --no-sandbox --disable-gpu --disable-dev-shm-usage'"
   },
+
   "prettier": {
     "printWidth": 100,
     "singleQuote": true,
@@ -20,8 +27,7 @@
       }
     ]
   },
-  "private": true,
-  "packageManager": "npm@10.8.2",
+
   "dependencies": {
     "@angular/common": "^21.1.0",
     "@angular/compiler": "^21.1.0",
@@ -32,12 +38,17 @@
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
+
   "devDependencies": {
     "@angular/build": "^21.1.1",
     "@angular/cli": "^21.1.1",
     "@angular/compiler-cli": "^21.1.0",
+
     "@playwright/test": "^1.58.0",
     "@types/node": "^25.0.10",
+
+    "lighthouse": "^12.8.2",
+
     "jsdom": "^27.1.0",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"
