@@ -129,6 +129,10 @@ This project intentionally documents its limitations to reflect real-world engin
 - Authentication state is validated at **route-guard level only**
 - Security tests validate access denial **on navigation**, not during runtime state mutation
 
+### UI Stability (Security-Related Scenarios)
+- UI stability is validated for security-related redirects (no white screen, no uncaught errors)
+- Login page remains interactive after forced logout and corrupted auth state
+
 These limitations are **explicitly documented and covered by tests**, not hidden.
 
 ---
@@ -169,6 +173,6 @@ This project demonstrates how a QA Automation Engineer / SDET:
 - avoids false assumptions
 - documents limitations transparently
 - builds recruiter-ready, enterprise-grade test artifacts
-
+clear
 
 
