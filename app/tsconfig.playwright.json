@@ -1,12 +1,15 @@
 {
+  "extends": "./tsconfig.json",
+
   "compilerOptions": {
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
 
-    "strict": true,
     "types": ["node", "@playwright/test"],
-    "skipLibCheck": true
+    "strict": true,
+    "skipLibCheck": true,
+    "isolatedModules": true
   },
 
   "include": [
@@ -14,3 +17,4 @@
     "e2e/**/*.ts"
   ]
 }
+

@@ -2,11 +2,34 @@ import { defineConfig } from '@playwright/test';
 import path from 'path';
 
 export default defineConfig({
+  /**
+   * =========================
+   * TEST LOCATION
+   * =========================
+   */
   testDir: 'e2e/specs',
+
+  /**
+   * =========================
+   * GLOBAL TIMEOUT
+   * =========================
+   */
   timeout: 30_000,
 
+  /**
+   * =========================
+   * GLOBAL SETUP
+   * =========================
+   * Creates storageState files
+   * for user and admin roles
+   */
   globalSetup: path.resolve(__dirname, 'e2e/global-setup.ts'),
 
+  /**
+   * =========================
+   * SHARED CONTEXT SETTINGS
+   * =========================
+   */
   use: {
     baseURL: 'http://localhost:4200',
     trace: 'retain-on-failure',
@@ -14,69 +37,26 @@ export default defineConfig({
 
   /**
    * =========================
-   * PROJECTS
+   * PROJECTS (AUTH SCOPES)
    * =========================
    */
   projects: [
-    /**
-     * -------------------------
-     * Anonymous user
-     * -------------------------
-     */
     {
       name: 'anon',
       use: {
         storageState: undefined,
       },
     },
-
-    /**
-     * -------------------------
-     * Authenticated user
-     * -------------------------
-     */
     {
       name: 'user',
       use: {
-        storageState: path.resolve(
-          __dirname,
-          'e2e/.auth/user.json'
-        ),
+        storageState: path.resolve(__dirname, 'e2e/.auth/user.json'),
       },
     },
-
-    /**
-     * -------------------------
-     * Admin user
-     * -------------------------
-     */
     {
       name: 'admin',
       use: {
-        storageState: path.resolve(
-          __dirname,
-          'e2e/.auth/admin.json'
-        ),
-      },
-    },
-
-    /**
-     * =========================
-     * PERFORMANCE (LIGHTHOUSE)
-     * =========================
-     *
-     * - Isolated project
-     * - Single worker ONLY
-     * - No parallelism
-     * - Required for Lighthouse stability
-     */
-    {
-      name: 'performance',
-      testMatch: /.*lighthouse\.e2e\.spec\.ts/,
-      workers: 1,
-      retries: 0,
-      use: {
-        storageState: undefined,
+        storageState: path.resolve(__dirname, 'e2e/.auth/admin.json'),
       },
     },
   ],
@@ -93,6 +73,8 @@ export default defineConfig({
     timeout: 120_000,
   },
 });
+
+
 
 
 
