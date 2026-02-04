@@ -68,6 +68,20 @@ Protected routes are guarded using Angular `CanActivate` guards:
 
 ## 🧑‍💼 Role-Based Access Control (RBAC)
 
+### RBAC Test Coverage
+
+Role-based access control is validated using Playwright E2E tests to ensure
+that protected routes cannot be accessed by unauthorized roles.
+
+Covered scenarios:
+- Unauthenticated users are redirected to `/login`
+- Standard users are denied access to `/admin`
+- Admin users are granted access to `/admin`
+- Invalid or unknown roles are treated as unauthenticated
+
+RBAC enforcement is validated at route-guard level and covered by regression tests.
+
+
 ### Supported roles
 - `anon`  — unauthenticated user
 - `user`  — authenticated standard user
