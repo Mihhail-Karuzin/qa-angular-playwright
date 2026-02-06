@@ -55,3 +55,9 @@ Thumbs.db
 *.tmp
 *.log
 
+# Lighthouse temporary files (WSL / Windows)
+**/C:\Users\**
+**/lighthouse.*
+**/.lighthouse/**
+
+
