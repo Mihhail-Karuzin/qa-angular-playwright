@@ -11,8 +11,11 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
 
-    "performance:login": "CHROME_PATH=/usr/bin/chromium-browser lighthouse http://localhost:4200/login --only-categories=performance,accessibility --chrome-flags='--headless --no-sandbox --disable-gpu --disable-dev-shm-usage'",
-    "performance:dashboard": "CHROME_PATH=/usr/bin/chromium-browser lighthouse http://localhost:4200/dashboard --only-categories=performance,accessibility --chrome-flags='--headless --no-sandbox --disable-gpu --disable-dev-shm-usage'"
+    "performance": "npm run performance:login && npm run performance:dashboard",
+
+    "performance:login": "CHROME_PATH=/snap/bin/chromium npx lighthouse http://localhost:4200/login --only-categories=performance,accessibility --budgets-path=performance/lighthouse-budget.json --chrome-flags='--headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage' --output=html --output-path=performance/reports/login.html",
+
+    "performance:dashboard": "CHROME_PATH=/snap/bin/chromium npx lighthouse http://localhost:4200/dashboard --only-categories=performance,accessibility --budgets-path=performance/lighthouse-budget.json --chrome-flags='--headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage' --output=html --output-path=performance/reports/dashboard.html"
   },
 
   "prettier": {

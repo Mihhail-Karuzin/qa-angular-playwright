@@ -116,7 +116,8 @@ accessibility regressions during UI changes.
 
 ## ⚡ Performance Testing
 
-Performance validation is implemented using **Lighthouse CLI**.
+Performance validation is implemented using **Lighthouse CLI** to provide
+deterministic, CI-friendly performance and accessibility insights.
 
 ### Scope
 - Login page (`/login`)
@@ -128,26 +129,28 @@ Performance validation is implemented using **Lighthouse CLI**.
 - WSL / CI–friendly configuration
 
 ### Execution
+
 ```bash
 npm run performance:login
 npm run performance:dashboard
+Artifacts
+performance/reports/login.html
+
+performance/reports/dashboard.html
 
 Notes
+Lighthouse is executed via CLI for deterministic results
 
-- Lighthouse is executed via CLI for deterministic results
+Explicit CHROME_PATH is used for WSL / container compatibility
 
-- Explicit CHROME_PATH is used for WSL / container compatibility
+Performance testing is intentionally separated from E2E flows
 
-- Performance testing is intentionally separated from E2E flows
-
-- HTML reports are generated for manual review
+HTML reports are generated for manual review
 
 Limitations
+Audits are executed against Angular dev server
 
-- Audits are executed against Angular dev server
-
-- Results may differ from production builds
-
+Results may differ from production builds
 ---
 
 ## ⏳ Session Model & Lifecycle
