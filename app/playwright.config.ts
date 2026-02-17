@@ -1,7 +1,8 @@
 import { defineConfig } from '@playwright/test';
 import path from 'path';
 
-const isDocker = Boolean(process.env.DOCKER || process.env.CI);
+const isDocker = Boolean(process.env.DOCKER);
+const isCI = Boolean(process.env.CI);
 
 const E2E_DIR = path.resolve(__dirname, 'e2e');
 const AUTH_DIR = path.resolve(E2E_DIR, '.auth');
@@ -13,7 +14,11 @@ export default defineConfig({
   timeout: 30_000,
   expect: { timeout: 5_000 },
 
-  // 🔥 VERY IMPORTANT FOR DOCKER
+  // 🔥 Stability in CI
+  retries: isCI ? 2 : 0,
+  workers: isCI ? 2 : undefined,
+
+  // 🔥 Important for Docker artifact mapping
   outputDir: 'test-results',
 
   reporter: [
@@ -25,13 +30,15 @@ export default defineConfig({
   use: {
     baseURL: process.env.BASE_URL ?? 'http://localhost:4200',
     ignoreHTTPSErrors: true,
-    trace: 'retain-on-failure',
+
+    // Smart tracing strategy
+    trace: isCI ? 'on-first-retry' : 'retain-on-failure',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    video: isCI ? 'retain-on-failure' : 'on',
   },
 
-  // Global setup only locally
-  ...(isDocker
+  // Global setup only outside Docker/CI
+  ...(isDocker || isCI
     ? {}
     : {
         globalSetup: path.resolve(E2E_DIR, 'global-setup.ts'),
@@ -43,7 +50,7 @@ export default defineConfig({
       use: { storageState: undefined },
     },
 
-    ...(isDocker
+    ...(isDocker || isCI
       ? []
       : [
           {
