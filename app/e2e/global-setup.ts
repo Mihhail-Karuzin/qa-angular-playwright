@@ -12,50 +12,97 @@ async function loginAndSaveState(
   storagePath: string,
   creds: Credentials
 ) {
-  const browser = await chromium.launch();
-  const page = await browser.newPage({ baseURL });
+  /**
+   * =========================
+   * LAUNCH BROWSER (DOCKER / CI SAFE)
+   * =========================
+   */
+  const browser = await chromium.launch({
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-dev-shm-usage',
 
-  // 1️⃣ Открываем страницу логина
-  await page.goto('/login');
+      // 🔥 CRITICAL: disable proxy completely
+      '--proxy-server=direct://',
+      '--proxy-bypass-list=*',
 
-  // 2️⃣ Заполняем форму (РЕАЛЬНЫЕ data-testid из DOM)
+      // Safety flags
+      '--ignore-certificate-errors',
+      '--allow-insecure-localhost',
+      '--disable-web-security',
+    ],
+  });
+
+  /**
+   * =========================
+   * CONTEXT
+   * =========================
+   */
+  const context = await browser.newContext({
+    baseURL,
+    ignoreHTTPSErrors: true,
+  });
+
+  const page = await context.newPage();
+
+  /**
+   * =========================
+   * LOGIN FLOW
+   * =========================
+   */
+  await page.goto(`${baseURL}/login`, {
+    waitUntil: 'domcontentloaded',
+  });
+
   await page.getByTestId('username-input').fill(creds.username);
   await page.getByTestId('password-input').fill(creds.password);
   await page.getByTestId('login-btn').click();
 
-  // 3️⃣ Ждём УСПЕШНЫЙ логин (редирект)
-  await expect(page).toHaveURL(/\/dashboard/, { timeout: 30_000 });
+  await expect(page).toHaveURL(/\/dashboard/, {
+    timeout: 30_000,
+  });
 
-  // 4️⃣ Гарантируем папку для storageState
+  /**
+   * =========================
+   * STORAGE STATE
+   * =========================
+   */
   fs.mkdirSync(path.dirname(storagePath), { recursive: true });
-
-  // 5️⃣ Сохраняем storageState
-  await page.context().storageState({ path: storagePath });
+  await context.storageState({ path: storagePath });
 
   await browser.close();
 }
 
+/**
+ * =========================
+ * GLOBAL SETUP
+ * =========================
+ */
 export default async function globalSetup(config: FullConfig) {
   const baseURL =
     (config.projects[0]?.use?.baseURL as string) ??
-    'http://localhost:4200';
+    process.env.BASE_URL ??
+    'http://app:4200';
 
   const authDir = path.join(__dirname, '.auth');
 
   const userState = path.join(authDir, 'user.json');
   const adminState = path.join(authDir, 'admin.json');
 
-  // ✅ КРЕДЫ ИЗ AuthService
+  // USER
   await loginAndSaveState(baseURL, userState, {
     username: 'user',
     password: 'user123',
   });
 
+  // ADMIN
   await loginAndSaveState(baseURL, adminState, {
     username: 'admin',
     password: 'admin123',
   });
 }
+
 
 
 

@@ -1,0 +1,31 @@
+FROM mcr.microsoft.com/playwright:v1.50.1-jammy
+
+WORKDIR /work
+
+ENV HTTP_PROXY=""
+ENV HTTPS_PROXY=""
+ENV http_proxy=""
+ENV https_proxy=""
+ENV NO_PROXY="app,localhost,127.0.0.1"
+
+# Копируем корневой package.json
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# 🔥 Копируем config в КОРЕНЬ контейнера
+COPY app/playwright.config.ts ./playwright.config.ts
+COPY app/tsconfig.playwright.json ./tsconfig.playwright.json
+
+# Копируем e2e тесты
+COPY app/e2e ./e2e
+
+RUN npx playwright install --with-deps
+
+CMD ["npx", "playwright", "test"]
+
+
+
+
+
+
+

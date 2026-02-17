@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures';
 
 test.describe('RBAC: admin access control', () => {
   const ADMIN_PATH = '/admin';

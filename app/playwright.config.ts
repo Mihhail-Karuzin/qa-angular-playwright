@@ -1,78 +1,68 @@
 import { defineConfig } from '@playwright/test';
 import path from 'path';
 
+const isDocker = Boolean(process.env.DOCKER || process.env.CI);
+
+const E2E_DIR = path.resolve(__dirname, 'e2e');
+const AUTH_DIR = path.resolve(E2E_DIR, '.auth');
+
 export default defineConfig({
-  /**
-   * =========================
-   * TEST LOCATION
-   * =========================
-   */
-  testDir: 'e2e/specs',
+  testDir: path.join(E2E_DIR, 'specs'),
+  testMatch: ['**/*.spec.ts'],
 
-  /**
-   * =========================
-   * GLOBAL TIMEOUT
-   * =========================
-   */
   timeout: 30_000,
+  expect: { timeout: 5_000 },
 
-  /**
-   * =========================
-   * GLOBAL SETUP
-   * =========================
-   * Creates storageState files
-   * for user and admin roles
-   */
-  globalSetup: path.resolve(__dirname, 'e2e/global-setup.ts'),
+  // 🔥 VERY IMPORTANT FOR DOCKER
+  outputDir: 'test-results',
 
-  /**
-   * =========================
-   * SHARED CONTEXT SETTINGS
-   * =========================
-   */
+  reporter: [
+    ['list'],
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+    ['blob', { outputDir: 'blob-report' }],
+  ],
+
   use: {
-    baseURL: 'http://localhost:4200',
+    baseURL: process.env.BASE_URL ?? 'http://localhost:4200',
+    ignoreHTTPSErrors: true,
     trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
   },
 
-  /**
-   * =========================
-   * PROJECTS (AUTH SCOPES)
-   * =========================
-   */
+  // Global setup only locally
+  ...(isDocker
+    ? {}
+    : {
+        globalSetup: path.resolve(E2E_DIR, 'global-setup.ts'),
+      }),
+
   projects: [
     {
       name: 'anon',
-      use: {
-        storageState: undefined,
-      },
+      use: { storageState: undefined },
     },
-    {
-      name: 'user',
-      use: {
-        storageState: path.resolve(__dirname, 'e2e/.auth/user.json'),
-      },
-    },
-    {
-      name: 'admin',
-      use: {
-        storageState: path.resolve(__dirname, 'e2e/.auth/admin.json'),
-      },
-    },
-  ],
 
-  /**
-   * =========================
-   * WEB SERVER
-   * =========================
-   */
-  webServer: {
-    command: 'npm start',
-    url: 'http://localhost:4200',
-    reuseExistingServer: true,
-    timeout: 120_000,
-  },
+    ...(isDocker
+      ? []
+      : [
+          {
+            name: 'user',
+            use: {
+              storageState: path.join(AUTH_DIR, 'user.json'),
+            },
+          },
+          {
+            name: 'admin',
+            use: {
+              storageState: path.join(AUTH_DIR, 'admin.json'),
+            },
+          },
+        ]),
+  ],
 });
+
+
 
 
 

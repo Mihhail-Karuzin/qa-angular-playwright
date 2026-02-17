@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures';
 
 test.describe('A11Y: error announcement', () => {
   test('login error is accessible to screen readers', async ({ page }) => {

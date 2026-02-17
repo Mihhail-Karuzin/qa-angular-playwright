@@ -1,24 +1,39 @@
 {
   "name": "qa-angular-playwright",
   "private": true,
+  "version": "0.0.0",
+
   "scripts": {
-    "start": "ng serve --port 4200",
+    "start": "ng serve --host 0.0.0.0 --port 4200",
+    "build": "ng build",
+    "test": "ng test",
     "test:e2e": "playwright test"
   },
+
   "dependencies": {
-    "@angular/common": "^17.0.0",
-    "@angular/compiler": "^17.0.0",
-    "@angular/core": "^17.0.0",
-    "@angular/platform-browser": "^17.0.0",
-    "@angular/router": "^17.0.0",
-    "rxjs": "^7.8.0",
-    "zone.js": "^0.14.0"
+    "@angular/animations": "17.3.12",
+    "@angular/common": "17.3.12",
+    "@angular/compiler": "17.3.12",
+    "@angular/core": "17.3.12",
+    "@angular/forms": "17.3.12",
+    "@angular/platform-browser": "17.3.12",
+    "@angular/platform-browser-dynamic": "17.3.12",
+    "@angular/router": "17.3.12",
+    "rxjs": "7.8.1",
+    "zone.js": "0.14.3"
   },
+
   "devDependencies": {
-    "@angular/cli": "^17.0.0",
-    "@angular/compiler-cli": "^17.0.0",
-    "@playwright/test": "^1.58.0",
-    "@types/node": "^25.2.0",
-    "typescript": "~5.4.0"
+    "@angular/cli": "17.3.12",
+    "@angular/compiler-cli": "17.3.12",
+    "@angular-devkit/build-angular": "17.3.12",
+    "@types/node": "20.11.30",
+    "@playwright/test": "1.50.1",
+    "typescript": "5.4.5"
   }
 }
+
+
+
+
+

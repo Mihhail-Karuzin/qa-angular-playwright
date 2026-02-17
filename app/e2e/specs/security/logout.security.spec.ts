@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures';
 import { clear } from 'node:console';
 
 test.describe('Security: access after logout', () => {

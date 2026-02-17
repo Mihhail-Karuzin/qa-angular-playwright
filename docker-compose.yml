@@ -1,0 +1,41 @@
+services:
+  app:
+    container_name: qa-angular-playwright-app
+
+    build:
+      context: .
+      dockerfile: app/Dockerfile.app
+
+    # For local access in browser
+    ports:
+      - "4200:80"
+
+  e2e:
+    container_name: qa-angular-playwright-e2e
+
+    build:
+      context: .
+      dockerfile: app/Dockerfile.e2e
+
+    depends_on:
+      app:
+        condition: service_healthy
+
+    environment:
+      BASE_URL: "http://app:80"
+      DOCKER: "true"
+      CI: "true"
+
+    volumes:
+      - ./artifacts/test-results:/work/test-results
+      - ./artifacts/playwright-report:/work/playwright-report
+      - ./artifacts/blob-report:/work/blob-report
+
+    shm_size: "1gb"
+
+
+
+
+
+
+

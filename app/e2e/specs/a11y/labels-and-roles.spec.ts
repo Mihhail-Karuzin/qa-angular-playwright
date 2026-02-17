@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures';
 
 test.describe('A11Y: labels and roles', () => {
   test('login inputs have accessible labels', async ({ page }) => {
