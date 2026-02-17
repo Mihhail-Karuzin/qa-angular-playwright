@@ -2,128 +2,41 @@ name: CI (Docker Compose E2E)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
-  workflow_dispatch:
-
-concurrency:
-  group: qa-angular-playwright-${{ github.ref }}
-  cancel-in-progress: true
+    branches: [ main ]
 
 jobs:
-  docker-e2e:
+  e2e-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
-
-    env:
-      CI: "true"
-      DOCKER: "true"
-      BASE_URL: "http://app:4200"
-
-      # Where artifacts will be available on the runner (bind mounts from docker-compose)
-      ARTIFACTS_DIR: "artifacts"
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Speeds up docker builds across runs (important for Angular + Playwright deps)
-      - name: Docker build cache
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: buildx-${{ runner.os }}-${{ github.ref_name }}-${{ github.sha }}
-          restore-keys: |
-            buildx-${{ runner.os }}-${{ github.ref_name }}-
-            buildx-${{ runner.os }}-
+      - name: Build Docker images
+        run: docker compose build
 
-      - name: Prepare artifacts folders
-        run: |
-          mkdir -p "${ARTIFACTS_DIR}/playwright-report"
-          mkdir -p "${ARTIFACTS_DIR}/test-results"
-          mkdir -p "${ARTIFACTS_DIR}/blob-report"
+      - name: Run E2E tests inside Docker Compose
+        run: docker compose up --abort-on-container-exit
 
-      - name: Docker Compose build
-        run: |
-          docker compose version
-          docker compose build
-
-      # Bring up only the app first. healthcheck should make it "healthy".
-      - name: Start app (nginx) service
-        run: |
-          docker compose up -d app
-          docker compose ps
-
-      # Optional: show logs if app fails to become healthy (useful for debugging)
-      - name: Wait for app to be healthy
-        run: |
-          echo "Waiting for app healthcheck..."
-          for i in {1..60}; do
-            STATUS="$(docker inspect --format='{{json .State.Health.Status}}' "$(docker compose ps -q app)")"
-            echo "app health: ${STATUS}"
-            if [ "${STATUS}" = "\"healthy\"" ]; then
-              echo "App is healthy."
-              exit 0
-            fi
-            if [ "${STATUS}" = "\"unhealthy\"" ]; then
-              echo "App became unhealthy."
-              docker compose logs --no-color app || true
-              exit 1
-            fi
-            sleep 2
-          done
-          echo "Timed out waiting for app to become healthy."
-          docker compose logs --no-color app || true
-          exit 1
-
-      # Run e2e as a one-off container. It must exit with Playwright's exit code.
-      - name: Run E2E (Playwright) container
-        run: |
-          set -e
-          docker compose run --rm e2e
-
-      # Always collect logs (helps when flakes or infra issues appear)
-      - name: Compose logs (always)
+      - name: Stop containers
         if: always()
-        run: |
-          docker compose ps || true
-          docker compose logs --no-color app || true
-          docker compose logs --no-color e2e || true
+        run: docker compose down -v
 
-      # Always shutdown containers to free runner resources
-      - name: Shutdown (always)
-        if: always()
-        run: |
-          docker compose down -v --remove-orphans || true
-
-      # Upload artifacts even if tests failed
-      - name: Upload Playwright HTML report
+      - name: Upload Playwright Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
-          path: ${{ env.ARTIFACTS_DIR }}/playwright-report
-          if-no-files-found: warn
-          retention-days: 14
+          path: artifacts/playwright-report
 
-      - name: Upload test-results
+      - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: ${{ env.ARTIFACTS_DIR }}/test-results
-          if-no-files-found: warn
-          retention-days: 14
-
-      - name: Upload blob-report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: blob-report
-          path: ${{ env.ARTIFACTS_DIR }}/blob-report
-          if-no-files-found: warn
-          retention-days: 14
+          path: artifacts/test-results
