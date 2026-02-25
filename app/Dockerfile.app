@@ -21,6 +21,9 @@ RUN npm run build -- --configuration production
 # ===============================
 FROM nginx:1.29-alpine
 
+# Install curl for proper HTTP healthcheck
+RUN apk add --no-cache curl
+
 # Remove default nginx config
 RUN rm /etc/nginx/conf.d/default.conf
 
@@ -30,12 +33,12 @@ COPY app/nginx.conf /etc/nginx/conf.d/default.conf
 # Copy Angular build output
 COPY --from=builder /app/dist/app /usr/share/nginx/html
 
-# IMPORTANT: nginx runs on port 80 inside container
+# Expose port 80
 EXPOSE 80
 
-# HEALTHCHECK (no wget needed)
+# HEALTHCHECK — проверяет HTTP доступность сервера
 HEALTHCHECK --interval=5s --timeout=3s --retries=10 \
-  CMD nginx -t || exit 1
+  CMD curl -f http://localhost || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]
 

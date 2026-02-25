@@ -4,14 +4,28 @@
   "private": true,
   "scripts": {
     "ng": "ng",
+
     "start": "ng serve --host 0.0.0.0 --port 4200",
-    "build": "ng build",
+
+    "build": "ng build --configuration production",
+
     "watch": "ng build --watch --configuration development",
+
     "test": "ng test",
+
     "e2e": "playwright test",
-    "performance": "npm run performance:login && npm run performance:dashboard",
-    "performance:login": "lighthouse http://localhost:4200/login --only-categories=performance,accessibility --budgets-path=performance/lighthouse-budget.json --chrome-flags='--headless --no-sandbox --disable-gpu --disable-dev-shm-usage' --output=html --output-path=performance/reports/login.html",
-    "performance:dashboard": "lighthouse http://localhost:4200/dashboard --only-categories=performance,accessibility --budgets-path=performance/lighthouse-budget.json --chrome-flags='--headless --no-sandbox --disable-gpu --disable-dev-shm-usage' --output=html --output-path=performance/reports/dashboard.html"
+
+    "serve:prod": "serve -s dist/app -l 4200",
+
+    "performance": "npm run build && npm run performance:serve-and-test",
+
+    "performance:serve-and-test": "concurrently -k \"npm run serve:prod\" \"wait-on http://localhost:4200 && BASE_URL=http://localhost:4200 npm run performance:run\"",
+
+    "performance:run": "npm run performance:login && npm run performance:dashboard",
+
+    "performance:login": "CHROME_PATH=$(node -e \"console.log(require('@playwright/test').chromium.executablePath())\") && lighthouse $BASE_URL/login --chrome-path=$CHROME_PATH --only-categories=performance,accessibility --budgets-path=performance/lighthouse-budget.json --chrome-flags='--headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage' --output=html --output-path=performance/reports/login.html",
+
+    "performance:dashboard": "CHROME_PATH=$(node -e \"console.log(require('@playwright/test').chromium.executablePath())\") && lighthouse $BASE_URL/dashboard --chrome-path=$CHROME_PATH --only-categories=performance,accessibility --budgets-path=performance/lighthouse-budget.json --chrome-flags='--headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage' --output=html --output-path=performance/reports/dashboard.html"
   },
   "dependencies": {
     "@angular/common": "^21.1.0",
@@ -30,6 +44,11 @@
     "@playwright/test": "^1.58.0",
     "@types/node": "^25.0.10",
     "lighthouse": "^12.8.2",
+    "serve": "^14.2.1",
+    "concurrently": "^8.2.2",
+    "wait-on": "^7.0.1",
     "typescript": "~5.9.2"
   }
 }
+
+

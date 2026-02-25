@@ -1,22 +1,30 @@
-{
-  "resourceSizes": [
-    {
-      "resourceType": "script",
-      "budget": 300
-    },
-    {
-      "resourceType": "stylesheet",
-      "budget": 100
+[
+  {
+    "path": "/*",
+    "resourceSizes": [
+      {
+        "resourceType": "script",
+        "budget": 300
+      },
+      {
+        "resourceType": "stylesheet",
+        "budget": 120
+      }
+    ],
+    "resourceCounts": [
+      {
+        "resourceType": "script",
+        "budget": 20
+      },
+      {
+        "resourceType": "stylesheet",
+        "budget": 10
+      }
+    ],
+    "categories": {
+      "performance": 0.85,
+      "accessibility": 0.9
     }
-  ],
-  "resourceCounts": [
-    {
-      "resourceType": "script",
-      "budget": 15
-    },
-    {
-      "resourceType": "stylesheet",
-      "budget": 5
-    }
-  ]
-}
+  }
+]
+
