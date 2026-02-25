@@ -1,0 +1,46 @@
+name: Performance Gate (Lighthouse)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  lighthouse-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node (for gate script)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # (Опционально) Быстрее билды
+      - name: Enable Docker BuildKit
+        run: |
+          echo "DOCKER_BUILDKIT=1" >> $GITHUB_ENV
+          echo "COMPOSE_DOCKER_CLI_BUILD=1" >> $GITHUB_ENV
+
+      - name: Build & run Lighthouse container
+        run: |
+          docker compose up --build --abort-on-container-exit --exit-code-from lighthouse lighthouse
+
+      - name: Run Performance Gate
+        env:
+          LH_THRESHOLD: "0.80"   # <-- здесь порог. Потом можно поднять до 0.85
+        run: |
+          node scripts/performance-gate.js
+
+      # Чтобы отчёты можно было скачать из CI
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: artifacts/lighthouse
