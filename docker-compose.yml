@@ -40,25 +40,8 @@ services:
       - ./artifacts/lighthouse:/reports
       - ./app/performance/lighthouse-budget.json:/budget.json
     command: >
-      sh -c "
-      lighthouse http://app:80/login
-        --chrome-path=/usr/bin/chromium
-        --only-categories=performance
-        --budgets-path=/budget.json
-        --chrome-flags='--headless --no-sandbox --disable-dev-shm-usage'
-        --output=json
-        --output-path=/reports/login.json
-        --quiet ;
-      lighthouse http://app:80/dashboard
-        --chrome-path=/usr/bin/chromium
-        --only-categories=performance
-        --budgets-path=/budget.json
-        --chrome-flags='--headless --no-sandbox --disable-dev-shm-usage'
-        --output=json
-        --output-path=/reports/dashboard.json
-        --quiet
-      "
-
+      sh -c "lighthouse http://app:80/login --only-categories=performance --budgets-path=/budget.json --chrome-flags='--headless --no-sandbox --disable-dev-shm-usage' --output=json --output-path=/reports/login.json --quiet;
+             lighthouse http://app:80/dashboard --only-categories=performance --budgets-path=/budget.json --chrome-flags='--headless --no-sandbox --disable-dev-shm-usage' --output=json --output-path=/reports/dashboard.json --quiet"
 
 
 
