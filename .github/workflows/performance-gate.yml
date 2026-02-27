@@ -13,10 +13,10 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node (for gate script)
+      - name: Setup Node (for performance gate script)
         uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -26,26 +26,38 @@ jobs:
           echo "DOCKER_BUILDKIT=1" >> $GITHUB_ENV
           echo "COMPOSE_DOCKER_CLI_BUILD=1" >> $GITHUB_ENV
 
-      # 🔥 ДИНАМИЧЕСКИЙ THRESHOLD
+      # ==============================
+      # Dynamic Lighthouse Threshold
+      # ==============================
       - name: Set Lighthouse threshold by branch
         run: |
           echo "Current branch: $GITHUB_REF_NAME"
+
           if [ "$GITHUB_REF_NAME" = "main" ]; then
-            echo "LH_THRESHOLD=0.85" >> $GITHUB_ENV
-            echo "Using baseline threshold 0.85 for main"
+            echo "LH_THRESHOLD=0.90" >> $GITHUB_ENV
+            echo "Using strict threshold 0.90 for main branch"
           else
             echo "LH_THRESHOLD=0.85" >> $GITHUB_ENV
-            echo "Using baseline threshold 0.85 for non-main branch"
+            echo "Using standard threshold 0.85 for pull request"
           fi
 
-      - name: Build & run Lighthouse container
+      # ==============================
+      # Run Lighthouse in Docker
+      # ==============================
+      - name: Build & Run Lighthouse container
         run: |
           docker compose up --build --abort-on-container-exit --exit-code-from lighthouse lighthouse
 
+      # ==============================
+      # Enforce Performance Gate
+      # ==============================
       - name: Run Performance Gate
         run: |
           node scripts/performance-gate.js
 
+      # ==============================
+      # Upload Lighthouse HTML Reports
+      # ==============================
       - name: Upload Lighthouse reports
         if: always()
         uses: actions/upload-artifact@v4
