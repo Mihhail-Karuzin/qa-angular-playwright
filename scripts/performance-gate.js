@@ -10,20 +10,28 @@ function readJson(filePath) {
   return JSON.parse(raw);
 }
 
-function getPerformanceScore(report) {
+function getPerformanceScore(report, filePath) {
   const score = report?.categories?.performance?.score;
   if (typeof score !== "number") {
-    throw new Error("❌ Cannot read categories.performance.score from report");
+    throw new Error(`❌ Cannot read categories.performance.score from: ${filePath}`);
   }
   return score;
 }
 
-function formatScore(score) {
-  return Math.round(score * 100);
+function toPct(n) {
+  return Math.round(n * 100);
+}
+
+function parseThreshold(value) {
+  const t = Number(value);
+  if (!Number.isFinite(t)) throw new Error(`❌ LH_THRESHOLD is not a number: "${value}"`);
+  // ожидаем 0..1 (0.85), а не 85
+  if (t < 0 || t > 1) throw new Error(`❌ LH_THRESHOLD must be between 0 and 1 (example 0.85). Got: ${t}`);
+  return t;
 }
 
 function main() {
-  const threshold = Number(process.env.LH_THRESHOLD ?? "0.80"); // 0.80 = 80
+  const threshold = parseThreshold(process.env.LH_THRESHOLD ?? "0.85");
   const reportsDir = process.env.LH_REPORTS_DIR ?? path.join("artifacts", "lighthouse");
 
   const targets = [
@@ -33,21 +41,18 @@ function main() {
 
   console.log("===============================================");
   console.log("🚦 Lighthouse Performance Gate");
-  console.log(`✅ Threshold: ${Math.round(threshold * 100)} (score ${threshold})`);
-  console.log(`📁 Reports: ${reportsDir}`);
+  console.log(`🎯 Threshold: ${toPct(threshold)} (>= ${threshold})`);
+  console.log(`📁 Reports dir: ${reportsDir}`);
   console.log("===============================================");
 
   let failed = false;
 
   for (const t of targets) {
     const report = readJson(t.file);
-    const score = getPerformanceScore(report);
-    const scorePct = formatScore(score);
-    const thresholdPct = formatScore(threshold);
+    const score = getPerformanceScore(report, t.file);
 
     const ok = score >= threshold;
-
-    console.log(`${ok ? "✅" : "❌"} ${t.name}: ${scorePct} (need >= ${thresholdPct})`);
+    console.log(`${ok ? "✅" : "❌"} ${t.name}: ${toPct(score)} (need >= ${toPct(threshold)})`);
 
     if (!ok) failed = true;
   }
@@ -57,10 +62,10 @@ function main() {
   if (failed) {
     console.error("❌ Performance Gate FAILED. CI must stop here.");
     process.exit(1);
-  } else {
-    console.log("✅ Performance Gate PASSED.");
-    process.exit(0);
   }
+
+  console.log("✅ Performance Gate PASSED.");
+  process.exit(0);
 }
 
 main();
