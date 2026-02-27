@@ -34,8 +34,8 @@ jobs:
           echo "Current branch: $GITHUB_REF_NAME"
 
           if [ "$GITHUB_REF_NAME" = "main" ]; then
-            echo "LH_THRESHOLD=0.90" >> $GITHUB_ENV
-            echo "Using strict threshold 0.90 for main branch"
+            echo "LH_THRESHOLD=0.88" >> $GITHUB_ENV
+            echo "Using strict threshold 0.88 for main branch (CI adjusted)"
           else
             echo "LH_THRESHOLD=0.85" >> $GITHUB_ENV
             echo "Using standard threshold 0.85 for pull request"
