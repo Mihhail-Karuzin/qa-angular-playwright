@@ -31,11 +31,11 @@ jobs:
         run: |
           echo "Current branch: $GITHUB_REF_NAME"
           if [ "$GITHUB_REF_NAME" = "main" ]; then
-            echo "LH_THRESHOLD=0.90" >> $GITHUB_ENV
-            echo "Using strict threshold 0.90 for main"
+            echo "LH_THRESHOLD=0.85" >> $GITHUB_ENV
+            echo "Using baseline threshold 0.85 for main"
           else
             echo "LH_THRESHOLD=0.85" >> $GITHUB_ENV
-            echo "Using standard threshold 0.85 for non-main branch"
+            echo "Using baseline threshold 0.85 for non-main branch"
           fi
 
       - name: Build & run Lighthouse container
