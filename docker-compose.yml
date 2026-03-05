@@ -7,6 +7,12 @@ services:
       dockerfile: app/Dockerfile.app
     ports:
       - "4200:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
 
   e2e:
     container_name: qa-angular-playwright-e2e
@@ -26,6 +32,7 @@ services:
       - ./artifacts/blob-report:/work/blob-report
     shm_size: "1gb"
 
+
   lighthouse:
     container_name: qa-angular-playwright-lighthouse
     build:
@@ -39,62 +46,60 @@ services:
     volumes:
       - ./artifacts/lighthouse:/reports
       - ./app/performance/lighthouse-budget.json:/budget.json:ro
-
     command: >
       bash -lc '
-        set -euo pipefail;
+        set -euo pipefail
 
-        echo "==============================";
-        echo "🚦 Lighthouse run started";
-        echo "CHROME_PATH=$$CHROME_PATH";
-        echo "==============================";
+        echo "=============================="
+        echo "🚦 Lighthouse run started"
+        echo "CHROME_PATH=$CHROME_PATH"
+        echo "=============================="
 
-        mkdir -p /reports;
-        rm -f /reports/*;
+        mkdir -p /reports
+        rm -f /reports/*
 
-        echo "🟦 LOGIN (JSON)";
-        lighthouse "http://app:80/login" \
+        echo "🟦 LOGIN (JSON)"
+        lighthouse http://app:80/login \
           --only-categories=performance \
           --budgets-path=/budget.json \
-          --chrome-path="$$CHROME_PATH" \
+          --chrome-path="$CHROME_PATH" \
           --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
           --output=json \
           --output-path=/reports/login.json \
-          --quiet;
+          --quiet
 
-        echo "🟦 LOGIN (HTML)";
-        lighthouse "http://app:80/login" \
+        echo "🟦 LOGIN (HTML)"
+        lighthouse http://app:80/login \
           --only-categories=performance \
           --budgets-path=/budget.json \
-          --chrome-path="$$CHROME_PATH" \
+          --chrome-path="$CHROME_PATH" \
           --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
           --output=html \
           --output-path=/reports/login.html \
-          --quiet;
+          --quiet
 
-        echo "🟦 DASHBOARD (JSON)";
-        lighthouse "http://app:80/dashboard" \
+        echo "🟦 DASHBOARD (JSON)"
+        lighthouse http://app:80/dashboard \
           --only-categories=performance \
           --budgets-path=/budget.json \
-          --chrome-path="$$CHROME_PATH" \
+          --chrome-path="$CHROME_PATH" \
           --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
           --output=json \
           --output-path=/reports/dashboard.json \
-          --quiet;
+          --quiet
 
-        echo "🟦 DASHBOARD (HTML)";
-        lighthouse "http://app:80/dashboard" \
+        echo "🟦 DASHBOARD (HTML)"
+        lighthouse http://app:80/dashboard \
           --only-categories=performance \
           --budgets-path=/budget.json \
-          --chrome-path="$$CHROME_PATH" \
+          --chrome-path="$CHROME_PATH" \
           --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
           --output=html \
           --output-path=/reports/dashboard.html \
-          --quiet;
+          --quiet
 
-        echo "==============================";
-        echo "✅ Lighthouse reports generated:";
-        ls -la /reports;
-        echo "==============================";
+        echo "=============================="
+        echo "✅ Lighthouse reports generated:"
+        ls -la /reports
+        echo "=============================="
       '
-
