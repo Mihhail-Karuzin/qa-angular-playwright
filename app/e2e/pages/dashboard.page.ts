@@ -8,12 +8,10 @@ export class DashboardPage {
   constructor(page: Page) {
     this.page = page;
 
-    // ⬅️ ВАЖНО: проверь реальный текст заголовка
     this.heading = page.getByRole('heading', {
       name: /dashboard/i,
     });
 
-    // ✅ ИСПРАВЛЕНО: реальный testid
     this.logoutButton = page.getByRole('button', {
       name: /logout/i,
     });

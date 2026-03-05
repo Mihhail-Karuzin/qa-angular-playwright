@@ -14,7 +14,7 @@ export class LoginPage {
     this.passwordInput = page.getByTestId('password-input');
     this.loginButton = page.getByTestId('login-btn');
 
-    // ⬇️ ВАЖНО: локатор ошибки
+    
     this.errorMessage = page.getByTestId('login-error');
   }
 

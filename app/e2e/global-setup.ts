@@ -23,7 +23,7 @@ async function loginAndSaveState(
       '--no-sandbox',
       '--disable-dev-shm-usage',
 
-      // 🔥 CRITICAL: disable proxy completely
+      // CRITICAL: disable proxy completely
       '--proxy-server=direct://',
       '--proxy-bypass-list=*',
 

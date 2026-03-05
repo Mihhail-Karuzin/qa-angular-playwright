@@ -8,7 +8,7 @@ test.describe('Session: logout lifecycle', () => {
       'Logout not applicable for anon'
     );
 
-    // 1️⃣ ЯВНО логинимся
+    // OBVIOUSLY log in
     await page.goto('/login');
     await page.getByTestId('username-input').fill('admin');
     await page.getByTestId('password-input').fill('admin123');
@@ -16,20 +16,20 @@ test.describe('Session: logout lifecycle', () => {
 
     await expect(page).toHaveURL(/\/dashboard/);
 
-    // 2️⃣ КНОПКА logout (ВАЖНО: правильный testid)
+    // Logout BUTTON (IMPORTANT: correct testid)
     const logoutButton = page.getByTestId('logout');
     await expect(logoutButton).toBeVisible();
 
-    // 3️⃣ Логаут
+    // Logout
     await logoutButton.click();
 
-    // 4️⃣ Редирект на login
+    // Redirect to login
     await expect(page).toHaveURL(/\/login/);
 
-    // 5️⃣ Попытка вернуться назад
+    // Trying to go back
     await page.goto('/dashboard');
 
-    // 6️⃣ Guard снова срабатывает
+    // Guard is triggered again
     await expect(page).toHaveURL(/\/login/);
   });
 

@@ -8,7 +8,7 @@ test.describe('Login accessibility', () => {
     await page.getByTestId('username-input').fill('admin');
     await page.getByTestId('password-input').fill('admin123');
 
-    // Сабмит формы с клавиатуры (A11Y)
+    // Submitting a form using the keyboard (A11Y)
     await page.getByTestId('login-form').press('Enter');
 
     await expect(page).toHaveURL(/\/dashboard/);

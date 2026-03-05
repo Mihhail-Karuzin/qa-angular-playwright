@@ -36,7 +36,7 @@ COPY --from=builder /app/dist/app /usr/share/nginx/html
 # Expose port 80
 EXPOSE 80
 
-# HEALTHCHECK — проверяет HTTP доступность сервера
+# HEALTHCHECK — checks the HTTP availability of the server
 HEALTHCHECK --interval=5s --timeout=3s --retries=10 \
   CMD curl -f http://localhost || exit 1
 

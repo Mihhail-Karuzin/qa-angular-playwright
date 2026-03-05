@@ -1,11 +1,11 @@
-# 🏗 System Architecture — QA Angular Playwright
+# System Architecture — QA Angular Playwright
 
 This document explains the architectural design of the project
 from an engineering perspective.
 
 ---
 
-# 1️⃣ High-Level Architecture
+# High-Level Architecture
 
 Developer / CI Trigger
 │
@@ -44,7 +44,7 @@ Artifacts (reports, results)
 
 ---
 
-# 2️⃣ Execution Flow in CI
+# Execution Flow in CI
 
 1. GitHub Actions starts workflow
 2. Docker Compose builds containers
@@ -61,23 +61,23 @@ No dependency on host environment.
 
 ---
 
-# 3️⃣ Container Responsibilities
+# Container Responsibilities
 
-## 🟦 app container
+## app container
 
 - Multi-stage Angular production build
 - Static files served via Nginx
 - Gzip enabled
 - Health check enabled
 
-## 🟩 e2e container
+## e2e container
 
 - Playwright test execution
 - Page Object Model
 - Fixtures & auth state handling
 - Reports exported to mounted volumes
 
-## 🟨 lighthouse container
+## lighthouse container
 
 - Runs performance audit
 - Generates JSON + HTML reports
@@ -86,7 +86,7 @@ No dependency on host environment.
 
 ---
 
-# 4️⃣ CI Strategy
+# CI Strategy
 
 The CI pipeline is designed for:
 
@@ -99,7 +99,7 @@ The CI pipeline is designed for:
 
 ---
 
-# 5️⃣ Why Production Build Testing Matters
+# Why Production Build Testing Matters
 
 Testing against a dev server hides:
 
@@ -116,7 +116,7 @@ This mirrors real deployment environments.
 
 ---
 
-# 6️⃣ Performance Engineering Strategy
+# Performance Engineering Strategy
 
 - Lighthouse integrated in CI
 - Branch-based threshold control
@@ -128,7 +128,7 @@ Performance is enforced, not observed.
 
 ---
 
-# 7️⃣ Enterprise Design Philosophy
+# Enterprise Design Philosophy
 
 This project demonstrates:
 
@@ -140,7 +140,7 @@ This project demonstrates:
 
 ---
 
-# 8️⃣ What Makes This Project Enterprise-Grade
+# What Makes This Project Enterprise-Grade
 
 ✔ Docker-first execution  
 ✔ CI-enforced quality gates  

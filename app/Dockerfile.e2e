@@ -8,15 +8,15 @@ ENV http_proxy=""
 ENV https_proxy=""
 ENV NO_PROXY="app,localhost,127.0.0.1"
 
-# Копируем корневой package.json
+# Copy the root package.json
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# 🔥 Копируем config в КОРЕНЬ контейнера
+# Copy the config to the ROOT of the container
 COPY app/playwright.config.ts ./playwright.config.ts
 COPY app/tsconfig.playwright.json ./tsconfig.playwright.json
 
-# Копируем e2e тесты
+# Copying e2e tests
 COPY app/e2e ./e2e
 
 RUN npx playwright install --with-deps

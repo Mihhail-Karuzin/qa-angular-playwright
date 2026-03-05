@@ -1,6 +1,6 @@
 FROM node:22-bullseye
 
-# Chromium + минимальные зависимости для headless
+# Chromium + minimal dependencies for headless
 RUN apt-get update && apt-get install -y --no-install-recommends \
   chromium \
   chromium-sandbox \
@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   wget \
   && rm -rf /var/lib/apt/lists/*
 
-# Детерминизм: фиксируем версию lighthouse (можно обновлять осознанно)
+# Determinism: Fixing the Lighthouse version (can be updated consciously)
 RUN npm install -g lighthouse@12.2.1
 
 ENV CHROME_PATH=/usr/bin/chromium

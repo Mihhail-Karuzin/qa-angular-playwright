@@ -14,11 +14,11 @@ export default defineConfig({
   timeout: 30_000,
   expect: { timeout: 5_000 },
 
-  // 🔥 Stability in CI
+  // Stability in CI
   retries: isCI ? 2 : 0,
   workers: isCI ? 2 : undefined,
 
-  // 🔥 Important for Docker artifact mapping
+  // Important for Docker artifact mapping
   outputDir: 'test-results',
 
   reporter: [

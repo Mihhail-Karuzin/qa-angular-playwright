@@ -1,11 +1,11 @@
-# 🎤 Interview Guide — QA Angular Playwright
+# Interview Guide — QA Angular Playwright
 
 This document prepares you to confidently explain the project
 as a Senior QA Automation Engineer / SDET.
 
 ---
 
-# 1️⃣ How to Introduce the Project (30-second version)
+# How to Introduce the Project (30-second version)
 
 "This project demonstrates a production-style Angular SPA tested using Playwright,
 executed fully inside Docker, and validated in CI with enforced performance gates via Lighthouse.
@@ -15,7 +15,7 @@ and enterprise-grade test architecture."
 
 ---
 
-# 2️⃣ Key Engineering Decisions (And Why)
+# Key Engineering Decisions (And Why)
 
 ## Why Docker-first?
 
@@ -66,7 +66,7 @@ and prevent environment-specific failures.
 
 ---
 
-# 3️⃣ How This Reflects Real Enterprise Systems
+# How This Reflects Real Enterprise Systems
 
 | Enterprise Concern | Addressed Here |
 |--------------------|----------------|
@@ -79,9 +79,9 @@ and prevent environment-specific failures.
 
 ---
 
-# 4️⃣ Typical Interview Questions (And How to Answer)
+# Typical Interview Questions (And How to Answer)
 
-## ❓ How do you prevent flakiness?
+## How do you prevent flakiness?
 
 - Deterministic startup (health check)
 - Dockerized execution
@@ -90,7 +90,7 @@ and prevent environment-specific failures.
 
 ---
 
-## ❓ What would you improve next?
+## What would you improve next?
 
 - Add backend stub or API integration
 - Add accessibility testing (axe-core)
@@ -99,7 +99,7 @@ and prevent environment-specific failures.
 
 ---
 
-## ❓ How do you handle CI performance variability?
+## How do you handle CI performance variability?
 
 - Measure baseline in CI
 - Adjust threshold based on runner environment
@@ -108,7 +108,7 @@ and prevent environment-specific failures.
 
 ---
 
-## ❓ Why not use Playwright against localhost?
+## Why not use Playwright against localhost?
 
 Because:
 - It bypasses production build
@@ -119,7 +119,7 @@ This project intentionally mirrors deployment architecture.
 
 ---
 
-# 5️⃣ What Makes This Project Senior-Level?
+# What Makes This Project Senior-Level?
 
 ✔ Production-aware testing  
 ✔ CI-enforced performance gates  
@@ -130,7 +130,7 @@ This project intentionally mirrors deployment architecture.
 
 ---
 
-# 6️⃣ 60-Second Deep Technical Explanation
+# 60-Second Deep Technical Explanation
 
 "This framework separates application runtime, E2E testing,
 and performance auditing into isolated containers.
@@ -145,7 +145,7 @@ where reproducibility and quality gates are mandatory."
 
 ---
 
-# 7️⃣ Final Advice for Interview
+# Final Advice for Interview
 
 Speak calmly.
 Explain reasoning.

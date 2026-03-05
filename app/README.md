@@ -1,6 +1,6 @@
 ![CI](https://github.com/Mihhail-Karuzin/qa-angular-playwright/actions/workflows/main.yml/badge.svg)
 
-# 🧪 QA Angular Playwright — Security-Focused E2E Testing
+# QA Angular Playwright — Security-Focused E2E Testing
 
 Enterprise-grade end-to-end testing project for an Angular SPA, focused on **authentication, authorization, and session lifecycle validation** using Playwright.
 
@@ -8,7 +8,7 @@ This repository demonstrates how a QA Automation Engineer / SDET validates **cli
 
 ---
 
-## 🎯 Project Goals
+## Project Goals
 
 - Validate authentication and authorization flows in an Angular SPA
 - Ensure protected routes are not accessible without proper session state
@@ -18,7 +18,7 @@ This repository demonstrates how a QA Automation Engineer / SDET validates **cli
 
 ---
 
-## 🔐 Security Test Coverage
+## Security Test Coverage
 
 | Scenario                          | Test Type | Expected Behavior                               | Status |
 |----------------------------------|----------:|--------------------------------------------------|:------:|
@@ -32,7 +32,7 @@ This repository demonstrates how a QA Automation Engineer / SDET validates **cli
 
 ---
 
-## 🔒 Security & Access Control (Phase 2)
+## Security & Access Control (Phase 2)
 
 This phase focuses on **client-side security enforcement** and access control for the Angular application.
 
@@ -43,7 +43,7 @@ The goal is not to replace backend security, but to ensure that:
 
 ---
 
-## 🔑 Authentication & Route Guards
+## Authentication & Route Guards
 
 The application uses a **client-side session model** stored in `localStorage`.
 
@@ -66,7 +66,7 @@ Protected routes are guarded using Angular `CanActivate` guards:
 
 ---
 
-## 🧑‍💼 Role-Based Access Control (RBAC)
+## Role-Based Access Control (RBAC)
 
 ### RBAC Test Coverage
 
@@ -100,7 +100,7 @@ RBAC behavior is validated through **Playwright E2E tests** and reflects real-wo
 
 ---
 
-## ♿ Accessibility (A11Y)
+## Accessibility (A11Y)
 
 Basic accessibility checks are validated using Playwright E2E tests to ensure
 the application remains usable for keyboard and assistive technology users.
@@ -114,7 +114,7 @@ Covered areas:
 Accessibility tests are treated as regression checks to prevent accidental
 accessibility regressions during UI changes.
 
-## ⚡ Performance Testing
+## Performance Testing
 
 Performance validation is implemented using **Lighthouse CLI** to provide
 deterministic, CI-friendly performance and accessibility insights.
@@ -153,7 +153,7 @@ Audits are executed against Angular dev server
 Results may differ from production builds
 ---
 
-## ⏳ Session Model & Lifecycle
+## Session Model & Lifecycle
 
 Session state is stored in `localStorage`:
 
@@ -170,7 +170,7 @@ auth_expires_at = timestamp (TTL-based)
 
 ---
 
-## 🚪 Logout Behavior
+## Logout Behavior
 
 Logout is treated as a **security-critical flow** and explicitly validated:
 
@@ -182,7 +182,7 @@ Regression tests ensure logout behavior cannot be bypassed via navigation or sta
 
 ---
 
-## ⚠️ Documented Security Limitations
+## Documented Security Limitations
 
 This project intentionally documents its limitations to reflect real-world engineering tradeoffs.
 
@@ -204,7 +204,7 @@ These limitations are **explicitly documented and covered by tests**, not hidden
 
 ---
 
-## 🧪 Testing Strategy
+## Testing Strategy
 
 Security behavior is verified using **Playwright E2E tests** with isolated authentication scopes:
 
@@ -223,7 +223,7 @@ All security-related tests:
 
 ---
 
-## 🚀 CI Integration
+## CI Integration
 
 - GitHub Actions executes all E2E tests
 - Failures block the pipeline
@@ -231,7 +231,7 @@ All security-related tests:
 
 ---
 
-## 📌 Summary
+## Summary
 
 This project demonstrates how a QA Automation Engineer / SDET:
 

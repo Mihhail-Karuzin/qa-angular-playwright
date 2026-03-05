@@ -1,6 +1,6 @@
 # QA Angular Playwright (Enterprise Demo)
 
-## 🚦 CI Status
+## CI Status
 
 ![CI](https://github.com/Mihhail-Karuzin/qa-angular-playwright/actions/workflows/ci-docker-e2e.yml/badge.svg)
 
@@ -13,7 +13,7 @@ with Dockerized CI orchestration.
 
 ---
 
-## 🧱 System Architecture
+## System Architecture
 
 ```
                 +----------------------------------+
@@ -38,7 +38,7 @@ with Dockerized CI orchestration.
                 +----------------------------------+
 ```
 
-## 🏗 Architecture
+## Architecture
 
 - Angular 17 (Production build)
 - nginx runtime (multi-stage Docker)
@@ -50,7 +50,7 @@ with Dockerized CI orchestration.
 
 ---
 
-## 🐳 Dockerized Execution
+## Dockerized Execution
 
 Full stack runs inside Docker:
 
@@ -66,7 +66,7 @@ docker compose up --abort-on-container-exit
 
 ---
 
-## 🚀 Performance Engineering
+## Performance Engineering
 
 This project integrates Lighthouse into CI with enforced thresholds.
 
@@ -83,7 +83,7 @@ Performance is not observed — it is enforced.
 
 ---
 
-## 🔄 CI/CD Strategy (Hardening)
+## CI/CD Strategy (Hardening)
 
 - Matrix build (Node 20, 22)
 - Daily scheduled run
@@ -98,7 +98,7 @@ Everything runs inside Docker.
 
 ---
 
-## 🏢 Enterprise Design Decisions
+## Enterprise Design Decisions
 
 Why production build instead of dev server?
 → To simulate real user conditions.
@@ -117,7 +117,7 @@ Why CI-adjusted thresholds?
 
 ---
 
-## ⚠ Known Limitations
+## Known Limitations
 
 - Authentication is simulated (no real backend)
 - No distributed microservices integration
@@ -125,7 +125,7 @@ Why CI-adjusted thresholds?
 
 ---
 
-## 🎯 How This Maps to Real Enterprise Systems
+## How This Maps to Real Enterprise Systems
 
 | Enterprise Pattern | Implemented Here |
 |-------------------|------------------|
@@ -138,7 +138,7 @@ Why CI-adjusted thresholds?
 
 ---
 
-## 🎤 Interview Talking Points
+## Interview Talking Points
 
 - How Docker ensures reproducibility
 - Why performance must be enforced in CI

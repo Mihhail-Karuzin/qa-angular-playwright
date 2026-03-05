@@ -33,6 +33,12 @@
           },
           "configurations": {
             "production": {
+              "optimization": true,
+              "buildOptimizer": true,
+              "sourceMap": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "namedChunks": false,
               "outputHashing": "all",
               "budgets": [
                 {
@@ -55,7 +61,6 @@
           },
           "defaultConfiguration": "development"
         },
-
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
@@ -74,7 +79,6 @@
           },
           "defaultConfiguration": "development"
         },
-
         "test": {
           "builder": "@angular-devkit/build-angular:karma"
         }

@@ -3,8 +3,8 @@ import { LoginPage } from '../pages/login.page';
 import { DashboardPage } from '../pages/dashboard.page';
 
 /**
- * Расширяем стандартный test Playwright
- * добавляя enterprise-фикстуры
+ * Extending the standard Playwright test
+ * by adding enterprise fixtures
  */
 type AuthFixtures = {
   loginPage: LoginPage;

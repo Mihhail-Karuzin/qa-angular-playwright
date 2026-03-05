@@ -24,7 +24,7 @@ test.describe('Dashboard flow (authenticated)', () => {
 
     await dashboard.logout();
 
-    // ✅ logout → login
+    // logout → login
     await expect(page).toHaveURL(/\/login/);
   });
 });
