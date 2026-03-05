@@ -42,8 +42,6 @@ services:
     depends_on:
       app:
         condition: service_healthy
-    environment:
-      CHROME_PATH: "/usr/bin/chromium"
     volumes:
       - ./artifacts/lighthouse:/reports
       - ./app/performance/lighthouse-budget.json:/budget.json:ro
@@ -53,7 +51,6 @@ services:
 
         echo "=============================="
         echo "🚦 Lighthouse run started"
-        echo "CHROME_PATH=$CHROME_PATH"
         echo "=============================="
 
         mkdir -p /reports
@@ -63,7 +60,6 @@ services:
         lighthouse http://app:80/login \
           --only-categories=performance \
           --budgets-path=/budget.json \
-          --chrome-path="$CHROME_PATH" \
           --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
           --output=json \
           --output-path=/reports/login.json \
@@ -73,7 +69,6 @@ services:
         lighthouse http://app:80/login \
           --only-categories=performance \
           --budgets-path=/budget.json \
-          --chrome-path="$CHROME_PATH" \
           --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
           --output=html \
           --output-path=/reports/login.html \
@@ -83,7 +78,6 @@ services:
         lighthouse http://app:80/dashboard \
           --only-categories=performance \
           --budgets-path=/budget.json \
-          --chrome-path="$CHROME_PATH" \
           --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
           --output=json \
           --output-path=/reports/dashboard.json \
@@ -93,7 +87,6 @@ services:
         lighthouse http://app:80/dashboard \
           --only-categories=performance \
           --budgets-path=/budget.json \
-          --chrome-path="$CHROME_PATH" \
           --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
           --output=html \
           --output-path=/reports/dashboard.html \
